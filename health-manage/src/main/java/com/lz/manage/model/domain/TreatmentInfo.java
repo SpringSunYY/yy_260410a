@@ -31,8 +31,11 @@ public class TreatmentInfo implements Serializable
     private Long id;
 
     /** 居民 */
-    @Excel(name = "居民")
+    @Excel(name = "居民", type = Excel.Type.IMPORT)
     private Long residentId;
+    @TableField(exist = false)
+    @Excel(name = "居民", type = Excel.Type.EXPORT)
+    private String residentName;
 
     /** 就诊时间 */
     @JsonFormat(pattern = "yyyy-MM-dd")
@@ -52,8 +55,11 @@ public class TreatmentInfo implements Serializable
     private String appendix;
 
     /** 所属用户 */
-    @Excel(name = "所属用户")
+    @Excel(name = "所属用户", type = Excel.Type.IMPORT)
     private Long userId;
+    @Excel(name = "所属用户", type = Excel.Type.EXPORT)
+    @TableField(exist = false)
+    private String userName;
 
     /** 创建人 */
     @Excel(name = "创建人")
