@@ -2,6 +2,8 @@ package com.lz.manage.controller;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+import com.lz.manage.model.dto.serviceAppointmentInfo.ServiceAppointmentInfoAudit;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.access.prepost.PreAuthorize;
 import jakarta.annotation.Resource;
@@ -102,6 +104,17 @@ public class ServiceAppointmentInfoController extends BaseController
     {
         ServiceAppointmentInfo serviceAppointmentInfo = ServiceAppointmentInfoEdit.editToObj(serviceAppointmentInfoEdit);
         return toAjax(serviceAppointmentInfoService.updateServiceAppointmentInfo(serviceAppointmentInfo));
+    }
+
+    /**
+     * 审核服务预约
+     */
+    @PreAuthorize("@ss.hasPermi('manage:serviceAppointmentInfo:audit')")
+    @Log(title = "服务预约", businessType = BusinessType.UPDATE)
+    @PutMapping("/audit")
+    public AjaxResult audit(@RequestBody ServiceAppointmentInfoAudit serviceAppointmentInfoAudit){
+        ServiceAppointmentInfo serviceAppointmentInfo = ServiceAppointmentInfoAudit.auditToObj(serviceAppointmentInfoAudit);
+        return toAjax(serviceAppointmentInfoService.auditServiceAppointmentInfo(serviceAppointmentInfo));
     }
 
     /**

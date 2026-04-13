@@ -181,7 +181,7 @@
       <el-table-column label="预约日期" align="center" prop="appointmentTime" width="180" v-if="columns[6].visible"
                        :show-overflow-tooltip="true">
         <template #default="scope">
-          <span>{{ parseTime(scope.row.appointmentTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
+          <span>{{ parseTime(scope.row.appointmentTime, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
       <el-table-column label="具体时间" align="center" prop="dateType" v-if="columns[7].visible">
@@ -214,7 +214,7 @@
       <el-table-column label="创建时间" align="center" prop="createTime" width="180" v-if="columns[14].visible"
                        :show-overflow-tooltip="true">
         <template #default="scope">
-          <span>{{ parseTime(scope.row.createTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
+          <span>{{ parseTime(scope.row.createTime, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
       <el-table-column label="更新人" align="center" prop="updateBy" v-if="columns[15].visible"
@@ -222,15 +222,18 @@
       <el-table-column label="更新时间" align="center" prop="updateTime" width="180" v-if="columns[16].visible"
                        :show-overflow-tooltip="true">
         <template #default="scope">
-          <span>{{ parseTime(scope.row.updateTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
+          <span>{{ parseTime(scope.row.updateTime, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
       <el-table-column label="备注" align="center" prop="remark" v-if="columns[17].visible"
                        :show-overflow-tooltip="true"/>
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+      <el-table-column label="操作" align="center" fixed="right" width="180" class-name="small-padding fixed-width">
         <template #default="scope">
           <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)"
                      v-hasPermi="['manage:serviceAppointmentInfo:edit']">修改
+          </el-button>
+          <el-button link type="primary" @click="handleAppointmentAudit(scope.row)"
+                     v-hasPermi="['manage:serviceAppointmentInfo:audit']">审核
           </el-button>
           <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)"
                      v-hasPermi="['manage:serviceAppointmentInfo:remove']">删除
@@ -360,6 +363,41 @@
         </div>
       </template>
     </el-dialog>
+    <!-- 审核服务预约对话框 -->
+    <el-dialog :title="title" v-model="openAudit" width="500px" append-to-body>
+      <el-form ref="serviceAppointmentInfoAuditRef" :model="form" :rules="rules" label-width="80px">
+        <el-form-item label="状态" prop="status">
+          <el-radio-group v-model="form.status">
+            <el-radio
+                v-for="dict in health_appointment_status"
+                :key="dict.value"
+                :value="dict.value"
+            >{{ dict.label }}
+            </el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="服务时间" prop="serviceTime">
+          <el-date-picker clearable
+                          v-model="form.serviceTime"
+                          type="datetime"
+                          value-format="YYYY-MM-DD HH:mm:ss"
+                          placeholder="请选择服务时间">
+          </el-date-picker>
+        </el-form-item>
+        <el-form-item label="附件" prop="appendix">
+          <file-upload v-model="form.appendix"/>
+        </el-form-item>
+        <el-form-item label="备注" prop="remark">
+          <el-input v-model="form.remark" type="textarea" placeholder="请输入内容"/>
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <div class="dialog-footer">
+          <el-button type="primary" @click="submitAuditForm">确 定</el-button>
+          <el-button @click="cancel">取 消</el-button>
+        </div>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
@@ -369,7 +407,7 @@ import {
   getServiceAppointmentInfo,
   delServiceAppointmentInfo,
   addServiceAppointmentInfo,
-  updateServiceAppointmentInfo
+  updateServiceAppointmentInfo, auditServiceAppointmentInfo
 } from "@/api/manage/serviceAppointmentInfo";
 import {listResidentInfo} from "@/api/manage/residentInfo.js";
 import {allocatedUserListAll} from "@/api/system/role.js";
@@ -392,6 +430,29 @@ const total = ref(0);
 const title = ref("");
 const daterangeAppointmentTime = ref([]);
 const daterangeCreateTime = ref([]);
+
+
+const openAudit = ref(false);
+const handleAppointmentAudit = (row) => {
+  reset();
+  const _id = row.id || ids.value
+  getServiceAppointmentInfo(_id).then(response => {
+    form.value = response.data;
+    openAudit.value = true;
+    title.value = "审核服务预约";
+  });
+}
+
+const submitAuditForm = () => {
+  proxy.$refs["serviceAppointmentInfoAuditRef"].validate(valid => {
+    if (!valid) return;
+    auditServiceAppointmentInfo(form.value).then(res => {
+      openAudit.value = false;
+      proxy.$modal.msgSuccess("审核成功");
+      getList();
+    })
+  })
+}
 
 const data = reactive({
   form: {},
@@ -497,6 +558,7 @@ function getList() {
 // 取消按钮
 function cancel() {
   open.value = false;
+  openAudit.value = false;
   reset();
 }
 

@@ -130,6 +130,21 @@ public class ServiceAppointmentInfoServiceImpl extends ServiceImpl<ServiceAppoin
         return serviceAppointmentInfoMapper.updateServiceAppointmentInfo(serviceAppointmentInfo);
     }
 
+    @Override
+    public int auditServiceAppointmentInfo(ServiceAppointmentInfo serviceAppointmentInfo) {
+        //查询是否存在
+        ServiceAppointmentInfo serviceAppointmentInfoOld = serviceAppointmentInfoMapper.selectServiceAppointmentInfoById(serviceAppointmentInfo.getId());
+        if (StringUtils.isNull(serviceAppointmentInfoOld)) {
+            throw new ServiceException("服务预约不存在");
+        }
+        //如果是已取消或者已完成不可以修改
+        if (HealthAppointmentStatusEnum.HEALTH_APPOINTMENT_STATUS_3.getValue().equals(serviceAppointmentInfoOld.getStatus())
+            || HealthAppointmentStatusEnum.HEALTH_APPOINTMENT_STATUS_4.getValue().equals(serviceAppointmentInfoOld.getStatus())) {
+            throw new ServiceException("已完成或者已取消状态不可以修改");
+        }
+        return serviceAppointmentInfoMapper.updateServiceAppointmentInfo(serviceAppointmentInfo);
+    }
+
     /**
      * 批量删除服务预约
      *

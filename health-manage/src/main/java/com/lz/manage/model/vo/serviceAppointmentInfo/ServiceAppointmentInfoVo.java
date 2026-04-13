@@ -74,7 +74,7 @@ public class ServiceAppointmentInfoVo implements Serializable {
     /**
      * 服务时间
      */
-    @JsonFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date serviceTime;
 
     /**

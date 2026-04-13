@@ -49,6 +49,14 @@ public interface IServiceAppointmentInfoService extends IService<ServiceAppointm
     public int updateServiceAppointmentInfo(ServiceAppointmentInfo serviceAppointmentInfo);
 
     /**
+     * 审核服务预约
+     *
+     * @param serviceAppointmentInfo 服务预约
+     * @return 结果
+     */
+    int auditServiceAppointmentInfo(ServiceAppointmentInfo serviceAppointmentInfo);
+
+    /**
      * 批量删除服务预约
      * 
      * @param ids 需要删除的服务预约主键集合

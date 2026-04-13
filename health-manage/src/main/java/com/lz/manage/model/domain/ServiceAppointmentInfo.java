@@ -67,7 +67,7 @@ public class ServiceAppointmentInfo implements Serializable {
     /**
      * 预约日期
      */
-    @JsonFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @Excel(name = "预约日期", width = 30, dateFormat = "yyyy-MM-dd")
     private Date appointmentTime;
 
