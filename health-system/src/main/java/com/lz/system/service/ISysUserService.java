@@ -26,6 +26,8 @@ public interface ISysUserService
      */
     public List<SysUser> selectAllocatedList(SysUser user);
 
+    List<SysUser> selectAllocatedListAll(SysUser user);
+
     /**
      * 根据条件分页查询未分配用户角色列表
      * 

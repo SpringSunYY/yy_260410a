@@ -1,20 +1,21 @@
 package com.lz.manage.mapper;
 
-import java.util.List;
-import com.lz.manage.model.domain.ResidentInfo;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.lz.manage.model.domain.ResidentInfo;
+
+import java.util.List;
 
 /**
  * 居民信息Mapper接口
- * 
+ *
  * @author YY
  * @date 2026-04-13
  */
-public interface ResidentInfoMapper extends BaseMapper<ResidentInfo>
-{
+public interface ResidentInfoMapper extends BaseMapper<ResidentInfo> {
     /**
      * 查询居民信息
-     * 
+     *
      * @param id 居民信息主键
      * @return 居民信息
      */
@@ -22,7 +23,7 @@ public interface ResidentInfoMapper extends BaseMapper<ResidentInfo>
 
     /**
      * 查询居民信息列表
-     * 
+     *
      * @param residentInfo 居民信息
      * @return 居民信息集合
      */
@@ -30,7 +31,7 @@ public interface ResidentInfoMapper extends BaseMapper<ResidentInfo>
 
     /**
      * 新增居民信息
-     * 
+     *
      * @param residentInfo 居民信息
      * @return 结果
      */
@@ -38,7 +39,7 @@ public interface ResidentInfoMapper extends BaseMapper<ResidentInfo>
 
     /**
      * 修改居民信息
-     * 
+     *
      * @param residentInfo 居民信息
      * @return 结果
      */
@@ -46,7 +47,7 @@ public interface ResidentInfoMapper extends BaseMapper<ResidentInfo>
 
     /**
      * 删除居民信息
-     * 
+     *
      * @param id 居民信息主键
      * @return 结果
      */
@@ -54,9 +55,15 @@ public interface ResidentInfoMapper extends BaseMapper<ResidentInfo>
 
     /**
      * 批量删除居民信息
-     * 
+     *
      * @param ids 需要删除的数据主键集合
      * @return 结果
      */
     public int deleteResidentInfoByIds(Long[] ids);
+
+    default ResidentInfo selectResidentInfoByUserId(Long userId) {
+        return selectOne(new LambdaQueryWrapper<ResidentInfo>().eq(ResidentInfo::getUserId, userId));
+    }
+
+    ;
 }
