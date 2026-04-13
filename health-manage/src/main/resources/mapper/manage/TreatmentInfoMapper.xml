@@ -25,14 +25,21 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="selectTreatmentInfoList" parameterType="TreatmentInfo" resultMap="TreatmentInfoResult">
         <include refid="selectTreatmentInfoVo"/>
-        <where>  
-            <if test="id != null "> and id = #{id}</if>
-            <if test="residentId != null"> and resident_id = #{residentId}</if>
-            <if test="params.beginVisitTime != null and params.beginVisitTime != '' and params.endVisitTime != null and params.endVisitTime != ''"> and DATE_FORMAT(visit_time, '%Y-%m-%d') between #{params.beginVisitTime} and #{params.endVisitTime}</if>
-            <if test="userId != null "> and user_id = #{userId}</if>
-            <if test="createBy != null  and createBy != ''"> and create_by like concat('%', #{createBy}, '%')</if>
-            <if test="params.beginCreateTime != null and params.beginCreateTime != '' and params.endCreateTime != null and params.endCreateTime != ''"> and DATE_FORMAT(create_time, '%Y-%m-%d') between #{params.beginCreateTime} and #{params.endCreateTime}</if>
+        <where>
+            <if test="id != null ">and id = #{id}</if>
+            <if test="residentId != null">and resident_id = #{residentId}</if>
+            <if test="params.beginVisitTime != null and params.beginVisitTime != '' and params.endVisitTime != null and params.endVisitTime != ''">
+                and DATE_FORMAT(visit_time, '%Y-%m-%d') between #{params.beginVisitTime} and #{params.endVisitTime}
+            </if>
+            <if test="userId != null ">and user_id = #{userId}</if>
+            <if test="createBy != null  and createBy != ''">and create_by like concat('%', #{createBy}, '%')</if>
+            <if test="params.beginCreateTime != null and params.beginCreateTime != '' and params.endCreateTime != null and params.endCreateTime != ''">
+                and DATE_FORMAT(create_time, '%Y-%m-%d') between #{params.beginCreateTime} and #{params.endCreateTime}
+            </if>
+            <!-- 数据范围过滤 -->
+            ${params.dataScope}
         </where>
+        order by create_time desc
     </select>
     
     <select id="selectTreatmentInfoById" parameterType="Long" resultMap="TreatmentInfoResult">

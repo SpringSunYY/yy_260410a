@@ -2,6 +2,7 @@ package com.lz.manage.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.lz.common.annotation.DataScope;
 import com.lz.common.core.domain.entity.SysUser;
 import com.lz.common.exception.ServiceException;
 import com.lz.common.utils.DateUtils;
@@ -54,6 +55,7 @@ public class ResidentInfoServiceImpl extends ServiceImpl<ResidentInfoMapper, Res
      * @return 居民信息
      */
     @Override
+    @DataScope(deptAlias = "tb_resident_info", userAlias = "tb_resident_info")
     public List<ResidentInfo> selectResidentInfoList(ResidentInfo residentInfo) {
         List<ResidentInfo> residentInfos = residentInfoMapper.selectResidentInfoList(residentInfo);
         for (ResidentInfo info : residentInfos) {

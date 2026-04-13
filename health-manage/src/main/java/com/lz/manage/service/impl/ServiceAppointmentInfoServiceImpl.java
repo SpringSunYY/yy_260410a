@@ -61,6 +61,12 @@ public class ServiceAppointmentInfoServiceImpl extends ServiceImpl<ServiceAppoin
      */
     @Override
     public List<ServiceAppointmentInfo> selectServiceAppointmentInfoList(ServiceAppointmentInfo serviceAppointmentInfo) {
+        if (SecurityUtils.hasRole("doctor") && !SecurityUtils.isAdmin(SecurityUtils.getUserId())) {
+            serviceAppointmentInfo.setAppointmentUserId(SecurityUtils.getUserId());
+        }
+        if (SecurityUtils.hasRole("common") && !SecurityUtils.isAdmin(SecurityUtils.getUserId())) {
+            serviceAppointmentInfo.setUserId(SecurityUtils.getUserId());
+        }
         List<ServiceAppointmentInfo> serviceAppointmentInfos = serviceAppointmentInfoMapper.selectServiceAppointmentInfoList(serviceAppointmentInfo);
         for (ServiceAppointmentInfo info : serviceAppointmentInfos) {
             SysUser sysUser = sysUserService.selectUserById(info.getUserId());

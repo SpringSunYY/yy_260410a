@@ -29,13 +29,20 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="selectResidentInfoList" parameterType="ResidentInfo" resultMap="ResidentInfoResult">
         <include refid="selectResidentInfoVo"/>
-        <where>  
-            <if test="residentName != null  and residentName != ''"> and resident_name like concat('%', #{residentName}, '%')</if>
-            <if test="gender != null  and gender != ''"> and gender = #{gender}</if>
-            <if test="userId != null "> and user_id = #{userId}</if>
-            <if test="createBy != null  and createBy != ''"> and create_by like concat('%', #{createBy}, '%')</if>
-            <if test="params.beginCreateTime != null and params.beginCreateTime != '' and params.endCreateTime != null and params.endCreateTime != ''"> and DATE_FORMAT(create_time, '%Y-%m-%d') between #{params.beginCreateTime} and #{params.endCreateTime}</if>
+        <where>
+            <if test="residentName != null  and residentName != ''">and resident_name like concat('%', #{residentName},
+                '%')
+            </if>
+            <if test="gender != null  and gender != ''">and gender = #{gender}</if>
+            <if test="userId != null ">and user_id = #{userId}</if>
+            <if test="createBy != null  and createBy != ''">and create_by like concat('%', #{createBy}, '%')</if>
+            <if test="params.beginCreateTime != null and params.beginCreateTime != '' and params.endCreateTime != null and params.endCreateTime != ''">
+                and DATE_FORMAT(create_time, '%Y-%m-%d') between #{params.beginCreateTime} and #{params.endCreateTime}
+            </if>
+            <!-- 数据范围过滤 -->
+            ${params.dataScope}
         </where>
+        order by create_time desc
     </select>
     
     <select id="selectResidentInfoById" parameterType="Long" resultMap="ResidentInfoResult">

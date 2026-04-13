@@ -2,6 +2,7 @@ package com.lz.manage.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.lz.common.annotation.DataScope;
 import com.lz.common.core.domain.entity.SysUser;
 import com.lz.common.exception.ServiceException;
 import com.lz.common.utils.DateUtils;
@@ -58,6 +59,7 @@ public class HealthRecordInfoServiceImpl extends ServiceImpl<HealthRecordInfoMap
      * @return 健康档案
      */
     @Override
+    @DataScope(deptAlias = "tb_health_record_info", userAlias = "tb_health_record_info")
     public List<HealthRecordInfo> selectHealthRecordInfoList(HealthRecordInfo healthRecordInfo) {
         List<HealthRecordInfo> healthRecordInfos = healthRecordInfoMapper.selectHealthRecordInfoList(healthRecordInfo);
         for (HealthRecordInfo info : healthRecordInfos) {
