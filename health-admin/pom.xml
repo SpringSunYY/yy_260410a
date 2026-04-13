@@ -54,6 +54,11 @@
             <artifactId>health-generator</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>com.lz</groupId>
+            <artifactId>health-manage</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>

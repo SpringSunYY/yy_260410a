@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lz.manage.mapper.ResidentInfoMapper">
+    
+    <resultMap type="ResidentInfo" id="ResidentInfoResult">
+        <result property="id"    column="id"    />
+        <result property="residentName"    column="resident_name"    />
+        <result property="gender"    column="gender"    />
+        <result property="birthDateTime"    column="birth_date_time"    />
+        <result property="idCard"    column="id_card"    />
+        <result property="contactPhone"    column="contact_phone"    />
+        <result property="address"    column="address"    />
+        <result property="emergencyContact"    column="emergency_contact"    />
+        <result property="emergencyPhone"    column="emergency_phone"    />
+        <result property="appendix"    column="appendix"    />
+        <result property="userId"    column="user_id"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectResidentInfoVo">
+        select id, resident_name, gender, birth_date_time, id_card, contact_phone, address, emergency_contact, emergency_phone, appendix, user_id, create_by, create_time, update_by, update_time, remark from tb_resident_info
+    </sql>
+
+    <select id="selectResidentInfoList" parameterType="ResidentInfo" resultMap="ResidentInfoResult">
+        <include refid="selectResidentInfoVo"/>
+        <where>  
+            <if test="residentName != null  and residentName != ''"> and resident_name like concat('%', #{residentName}, '%')</if>
+            <if test="gender != null  and gender != ''"> and gender = #{gender}</if>
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="createBy != null  and createBy != ''"> and create_by like concat('%', #{createBy}, '%')</if>
+            <if test="params.beginCreateTime != null and params.beginCreateTime != '' and params.endCreateTime != null and params.endCreateTime != ''"> and DATE_FORMAT(create_time, '%Y-%m-%d') between #{params.beginCreateTime} and #{params.endCreateTime}</if>
+        </where>
+    </select>
+    
+    <select id="selectResidentInfoById" parameterType="Long" resultMap="ResidentInfoResult">
+        <include refid="selectResidentInfoVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertResidentInfo" parameterType="ResidentInfo" useGeneratedKeys="true" keyProperty="id">
+        insert into tb_resident_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="residentName != null and residentName != ''">resident_name,</if>
+            <if test="gender != null and gender != ''">gender,</if>
+            <if test="birthDateTime != null">birth_date_time,</if>
+            <if test="idCard != null">id_card,</if>
+            <if test="contactPhone != null">contact_phone,</if>
+            <if test="address != null">address,</if>
+            <if test="emergencyContact != null">emergency_contact,</if>
+            <if test="emergencyPhone != null">emergency_phone,</if>
+            <if test="appendix != null">appendix,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="createBy != null and createBy != ''">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="residentName != null and residentName != ''">#{residentName},</if>
+            <if test="gender != null and gender != ''">#{gender},</if>
+            <if test="birthDateTime != null">#{birthDateTime},</if>
+            <if test="idCard != null">#{idCard},</if>
+            <if test="contactPhone != null">#{contactPhone},</if>
+            <if test="address != null">#{address},</if>
+            <if test="emergencyContact != null">#{emergencyContact},</if>
+            <if test="emergencyPhone != null">#{emergencyPhone},</if>
+            <if test="appendix != null">#{appendix},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="createBy != null and createBy != ''">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateResidentInfo" parameterType="ResidentInfo">
+        update tb_resident_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="residentName != null and residentName != ''">resident_name = #{residentName},</if>
+            <if test="gender != null and gender != ''">gender = #{gender},</if>
+            <if test="birthDateTime != null">birth_date_time = #{birthDateTime},</if>
+            <if test="idCard != null">id_card = #{idCard},</if>
+            <if test="contactPhone != null">contact_phone = #{contactPhone},</if>
+            <if test="address != null">address = #{address},</if>
+            <if test="emergencyContact != null">emergency_contact = #{emergencyContact},</if>
+            <if test="emergencyPhone != null">emergency_phone = #{emergencyPhone},</if>
+            <if test="appendix != null">appendix = #{appendix},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="createBy != null and createBy != ''">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteResidentInfoById" parameterType="Long">
+        delete from tb_resident_info where id = #{id}
+    </delete>
+
+    <delete id="deleteResidentInfoByIds" parameterType="String">
+        delete from tb_resident_info where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

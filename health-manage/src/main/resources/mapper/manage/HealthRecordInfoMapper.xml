@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lz.manage.mapper.HealthRecordInfoMapper">
+    
+    <resultMap type="HealthRecordInfo" id="HealthRecordInfoResult">
+        <result property="id"    column="id"    />
+        <result property="residentId"    column="resident_id"    />
+        <result property="recordCode"    column="record_code"    />
+        <result property="bloodType"    column="blood_type"    />
+        <result property="rhType"    column="rh_type"    />
+        <result property="pastHistory"    column="past_history"    />
+        <result property="familyHistory"    column="family_history"    />
+        <result property="appendix"    column="appendix"    />
+        <result property="userId"    column="user_id"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectHealthRecordInfoVo">
+        select id, resident_id, record_code, blood_type, rh_type, past_history, family_history, appendix, user_id, create_by, create_time, update_by, update_time, remark from tb_health_record_info
+    </sql>
+
+    <select id="selectHealthRecordInfoList" parameterType="HealthRecordInfo" resultMap="HealthRecordInfoResult">
+        <include refid="selectHealthRecordInfoVo"/>
+        <where>  
+            <if test="residentId != null  and residentId != ''"> and resident_id = #{residentId}</if>
+            <if test="recordCode != null  and recordCode != ''"> and record_code like concat('%', #{recordCode}, '%')</if>
+            <if test="bloodType != null  and bloodType != ''"> and blood_type = #{bloodType}</if>
+            <if test="rhType != null  and rhType != ''"> and rh_type = #{rhType}</if>
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="createBy != null  and createBy != ''"> and create_by like concat('%', #{createBy}, '%')</if>
+            <if test="params.beginCreateTime != null and params.beginCreateTime != '' and params.endCreateTime != null and params.endCreateTime != ''"> and DATE_FORMAT(create_time, '%Y-%m-%d') between #{params.beginCreateTime} and #{params.endCreateTime}</if>
+        </where>
+    </select>
+    
+    <select id="selectHealthRecordInfoById" parameterType="Long" resultMap="HealthRecordInfoResult">
+        <include refid="selectHealthRecordInfoVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertHealthRecordInfo" parameterType="HealthRecordInfo" useGeneratedKeys="true" keyProperty="id">
+        insert into tb_health_record_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="residentId != null and residentId != ''">resident_id,</if>
+            <if test="recordCode != null and recordCode != ''">record_code,</if>
+            <if test="bloodType != null and bloodType != ''">blood_type,</if>
+            <if test="rhType != null and rhType != ''">rh_type,</if>
+            <if test="pastHistory != null">past_history,</if>
+            <if test="familyHistory != null">family_history,</if>
+            <if test="appendix != null">appendix,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="createBy != null and createBy != ''">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="residentId != null and residentId != ''">#{residentId},</if>
+            <if test="recordCode != null and recordCode != ''">#{recordCode},</if>
+            <if test="bloodType != null and bloodType != ''">#{bloodType},</if>
+            <if test="rhType != null and rhType != ''">#{rhType},</if>
+            <if test="pastHistory != null">#{pastHistory},</if>
+            <if test="familyHistory != null">#{familyHistory},</if>
+            <if test="appendix != null">#{appendix},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="createBy != null and createBy != ''">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateHealthRecordInfo" parameterType="HealthRecordInfo">
+        update tb_health_record_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="residentId != null and residentId != ''">resident_id = #{residentId},</if>
+            <if test="recordCode != null and recordCode != ''">record_code = #{recordCode},</if>
+            <if test="bloodType != null and bloodType != ''">blood_type = #{bloodType},</if>
+            <if test="rhType != null and rhType != ''">rh_type = #{rhType},</if>
+            <if test="pastHistory != null">past_history = #{pastHistory},</if>
+            <if test="familyHistory != null">family_history = #{familyHistory},</if>
+            <if test="appendix != null">appendix = #{appendix},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="createBy != null and createBy != ''">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteHealthRecordInfoById" parameterType="Long">
+        delete from tb_health_record_info where id = #{id}
+    </delete>
+
+    <delete id="deleteHealthRecordInfoByIds" parameterType="String">
+        delete from tb_health_record_info where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

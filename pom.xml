@@ -191,6 +191,12 @@
                 <version>${health.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>com.lz</groupId>
+                <artifactId>health-manage</artifactId>
+                <version>${health.version}</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 
@@ -201,6 +207,7 @@
         <module>health-quartz</module>
         <module>health-generator</module>
         <module>health-common</module>
+        <module>health-manage</module>
     </modules>
     <packaging>pom</packaging>
 
