@@ -1,24 +1,25 @@
 package com.lz.manage.service.impl;
 
-import java.util.*;
-import java.util.List;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.stream.Collectors;
-import com.lz.common.utils.StringUtils;
-import java.math.BigDecimal;
-import java.util.Date;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.lz.common.utils.DateUtils;
-import jakarta.annotation.Resource;
-import org.springframework.stereotype.Service;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.lz.common.core.domain.entity.SysUser;
+import com.lz.common.exception.ServiceException;
+import com.lz.common.utils.DateUtils;
+import com.lz.common.utils.SecurityUtils;
+import com.lz.common.utils.StringUtils;
 import com.lz.manage.mapper.HealthHistoryInfoMapper;
 import com.lz.manage.model.domain.HealthHistoryInfo;
-import com.lz.manage.service.IHealthHistoryInfoService;
+import com.lz.manage.model.domain.ResidentInfo;
 import com.lz.manage.model.dto.healthHistoryInfo.HealthHistoryInfoQuery;
 import com.lz.manage.model.vo.healthHistoryInfo.HealthHistoryInfoVo;
+import com.lz.manage.service.IHealthHistoryInfoService;
+import com.lz.manage.service.IResidentInfoService;
+import com.lz.system.service.ISysUserService;
+import jakarta.annotation.Resource;
+import org.springframework.stereotype.Service;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 健康记录Service业务层处理
@@ -27,13 +28,19 @@ import com.lz.manage.model.vo.healthHistoryInfo.HealthHistoryInfoVo;
  * @date 2026-04-13
  */
 @Service
-public class HealthHistoryInfoServiceImpl extends ServiceImpl<HealthHistoryInfoMapper, HealthHistoryInfo> implements IHealthHistoryInfoService
-{
+public class HealthHistoryInfoServiceImpl extends ServiceImpl<HealthHistoryInfoMapper, HealthHistoryInfo> implements IHealthHistoryInfoService {
 
     @Resource
     private HealthHistoryInfoMapper healthHistoryInfoMapper;
 
+    @Resource
+    private ISysUserService sysUserService;
+
+    @Resource
+    private IResidentInfoService residentInfoService;
+
     //region mybatis代码
+
     /**
      * 查询健康记录
      *
@@ -41,8 +48,7 @@ public class HealthHistoryInfoServiceImpl extends ServiceImpl<HealthHistoryInfoM
      * @return 健康记录
      */
     @Override
-    public HealthHistoryInfo selectHealthHistoryInfoById(Long id)
-    {
+    public HealthHistoryInfo selectHealthHistoryInfoById(Long id) {
         return healthHistoryInfoMapper.selectHealthHistoryInfoById(id);
     }
 
@@ -53,9 +59,19 @@ public class HealthHistoryInfoServiceImpl extends ServiceImpl<HealthHistoryInfoM
      * @return 健康记录
      */
     @Override
-    public List<HealthHistoryInfo> selectHealthHistoryInfoList(HealthHistoryInfo healthHistoryInfo)
-    {
-        return healthHistoryInfoMapper.selectHealthHistoryInfoList(healthHistoryInfo);
+    public List<HealthHistoryInfo> selectHealthHistoryInfoList(HealthHistoryInfo healthHistoryInfo) {
+        List<HealthHistoryInfo> healthHistoryInfos = healthHistoryInfoMapper.selectHealthHistoryInfoList(healthHistoryInfo);
+        for (HealthHistoryInfo info : healthHistoryInfos) {
+            SysUser sysUser = sysUserService.selectUserById(info.getUserId());
+            if (StringUtils.isNotNull(sysUser)) {
+                info.setUserName(sysUser.getUserName());
+            }
+            ResidentInfo residentInfo = residentInfoService.selectResidentInfoById(info.getResidentId());
+            if (StringUtils.isNotNull(residentInfo)) {
+                info.setResidentName(residentInfo.getResidentName());
+            }
+        }
+        return healthHistoryInfos;
     }
 
     /**
@@ -65,8 +81,14 @@ public class HealthHistoryInfoServiceImpl extends ServiceImpl<HealthHistoryInfoM
      * @return 结果
      */
     @Override
-    public int insertHealthHistoryInfo(HealthHistoryInfo healthHistoryInfo)
-    {
+    public int insertHealthHistoryInfo(HealthHistoryInfo healthHistoryInfo) {
+        //先查询居民是否存在
+        ResidentInfo residentInfo = residentInfoService.selectResidentInfoById(healthHistoryInfo.getResidentId());
+        if (StringUtils.isNull(residentInfo)) {
+            throw new ServiceException("居民不存在");
+        }
+        healthHistoryInfo.setUserId(residentInfo.getUserId());
+        healthHistoryInfo.setCreateBy(SecurityUtils.getUsername());
         healthHistoryInfo.setCreateTime(DateUtils.getNowDate());
         return healthHistoryInfoMapper.insertHealthHistoryInfo(healthHistoryInfo);
     }
@@ -78,8 +100,17 @@ public class HealthHistoryInfoServiceImpl extends ServiceImpl<HealthHistoryInfoM
      * @return 结果
      */
     @Override
-    public int updateHealthHistoryInfo(HealthHistoryInfo healthHistoryInfo)
-    {
+    public int updateHealthHistoryInfo(HealthHistoryInfo healthHistoryInfo) {
+        //先查询是否存在
+        HealthHistoryInfo healthHistoryInfoOld = healthHistoryInfoMapper.selectHealthHistoryInfoById(healthHistoryInfo.getId());
+        if (StringUtils.isNull(healthHistoryInfoOld)) {
+            throw new ServiceException("健康记录不存在");
+        }
+        //居民不可修改
+        if (!healthHistoryInfoOld.getResidentId().equals(healthHistoryInfo.getResidentId())) {
+            throw new ServiceException("居民不可修改");
+        }
+        healthHistoryInfo.setUpdateBy(SecurityUtils.getUsername());
         healthHistoryInfo.setUpdateTime(DateUtils.getNowDate());
         return healthHistoryInfoMapper.updateHealthHistoryInfo(healthHistoryInfo);
     }
@@ -91,8 +122,7 @@ public class HealthHistoryInfoServiceImpl extends ServiceImpl<HealthHistoryInfoM
      * @return 结果
      */
     @Override
-    public int deleteHealthHistoryInfoByIds(Long[] ids)
-    {
+    public int deleteHealthHistoryInfoByIds(Long[] ids) {
         return healthHistoryInfoMapper.deleteHealthHistoryInfoByIds(ids);
     }
 
@@ -103,13 +133,13 @@ public class HealthHistoryInfoServiceImpl extends ServiceImpl<HealthHistoryInfoM
      * @return 结果
      */
     @Override
-    public int deleteHealthHistoryInfoById(Long id)
-    {
+    public int deleteHealthHistoryInfoById(Long id) {
         return healthHistoryInfoMapper.deleteHealthHistoryInfoById(id);
     }
+
     //endregion
     @Override
-    public QueryWrapper<HealthHistoryInfo> getQueryWrapper(HealthHistoryInfoQuery healthHistoryInfoQuery){
+    public QueryWrapper<HealthHistoryInfo> getQueryWrapper(HealthHistoryInfoQuery healthHistoryInfoQuery) {
         QueryWrapper<HealthHistoryInfo> queryWrapper = new QueryWrapper<>();
         //如果不使用params可以删除
         Map<String, Object> params = healthHistoryInfoQuery.getParams();
@@ -117,25 +147,25 @@ public class HealthHistoryInfoServiceImpl extends ServiceImpl<HealthHistoryInfoM
             params = new HashMap<>();
         }
         Long id = healthHistoryInfoQuery.getId();
-        queryWrapper.eq( StringUtils.isNotNull(id),"id",id);
+        queryWrapper.eq(StringUtils.isNotNull(id), "id", id);
 
         Long residentId = healthHistoryInfoQuery.getResidentId();
-        queryWrapper.eq(StringUtils.isNotNull(residentId) ,"resident_id",residentId);
+        queryWrapper.eq(StringUtils.isNotNull(residentId), "resident_id", residentId);
 
         Date measureTime = healthHistoryInfoQuery.getMeasureTime();
-        queryWrapper.between(StringUtils.isNotNull(params.get("beginMeasureTime"))&&StringUtils.isNotNull(params.get("endMeasureTime")),"measure_time",params.get("beginMeasureTime"),params.get("endMeasureTime"));
+        queryWrapper.between(StringUtils.isNotNull(params.get("beginMeasureTime")) && StringUtils.isNotNull(params.get("endMeasureTime")), "measure_time", params.get("beginMeasureTime"), params.get("endMeasureTime"));
 
         String measureType = healthHistoryInfoQuery.getMeasureType();
-        queryWrapper.eq(StringUtils.isNotEmpty(measureType) ,"measure_type",measureType);
+        queryWrapper.eq(StringUtils.isNotEmpty(measureType), "measure_type", measureType);
 
         Long userId = healthHistoryInfoQuery.getUserId();
-        queryWrapper.eq( StringUtils.isNotNull(userId),"user_id",userId);
+        queryWrapper.eq(StringUtils.isNotNull(userId), "user_id", userId);
 
         String createBy = healthHistoryInfoQuery.getCreateBy();
-        queryWrapper.like(StringUtils.isNotEmpty(createBy) ,"create_by",createBy);
+        queryWrapper.like(StringUtils.isNotEmpty(createBy), "create_by", createBy);
 
         Date createTime = healthHistoryInfoQuery.getCreateTime();
-        queryWrapper.between(StringUtils.isNotNull(params.get("beginCreateTime"))&&StringUtils.isNotNull(params.get("endCreateTime")),"create_time",params.get("beginCreateTime"),params.get("endCreateTime"));
+        queryWrapper.between(StringUtils.isNotNull(params.get("beginCreateTime")) && StringUtils.isNotNull(params.get("endCreateTime")), "create_time", params.get("beginCreateTime"), params.get("endCreateTime"));
 
         return queryWrapper;
     }
