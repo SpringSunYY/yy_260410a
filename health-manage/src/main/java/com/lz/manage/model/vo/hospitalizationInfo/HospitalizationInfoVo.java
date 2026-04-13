@@ -25,6 +25,7 @@ public class HospitalizationInfoVo implements Serializable
 
     /** 居民 */
     private Long residentId;
+    private String residentName;
 
     /** 入院时间 */
     @JsonFormat(pattern = "yyyy-MM-dd")
@@ -48,6 +49,7 @@ public class HospitalizationInfoVo implements Serializable
 
     /** 所属用户 */
     private Long userId;
+    private String userName;
 
     /** 创建人 */
     private String createBy;

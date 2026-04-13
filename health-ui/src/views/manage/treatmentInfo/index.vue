@@ -11,7 +11,7 @@
       </el-form-item>
       <el-form-item label="居民" prop="residentId">
         <el-select
-            v-model="queryParams.userId"
+            v-model="queryParams.residentId"
             filterable
             remote
             reserve-keyword
