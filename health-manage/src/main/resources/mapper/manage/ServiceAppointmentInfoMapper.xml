@@ -31,18 +31,25 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="selectServiceAppointmentInfoList" parameterType="ServiceAppointmentInfo" resultMap="ServiceAppointmentInfoResult">
         <include refid="selectServiceAppointmentInfoVo"/>
-        <where>  
-            <if test="id != null "> and id = #{id}</if>
-            <if test="residentId != null"> and resident_id = #{residentId}</if>
-            <if test="serviceType != null  and serviceType != ''"> and service_type = #{serviceType}</if>
-            <if test="appointmentTitle != null  and appointmentTitle != ''"> and appointment_title like concat('%', #{appointmentTitle}, '%')</if>
-            <if test="params.beginAppointmentTime != null and params.beginAppointmentTime != '' and params.endAppointmentTime != null and params.endAppointmentTime != ''"> and DATE_FORMAT(appointment_time, '%Y-%m-%d') between #{params.beginAppointmentTime} and #{params.endAppointmentTime}</if>
-            <if test="dateType != null "> and date_type = #{dateType}</if>
-            <if test="status != null  and status != ''"> and status = #{status}</if>
-            <if test="appointmentUserId != null "> and appointment_user_id = #{appointmentUserId}</if>
-            <if test="userId != null "> and user_id = #{userId}</if>
-            <if test="createBy != null  and createBy != ''"> and create_by like concat('%', #{createBy}, '%')</if>
-            <if test="params.beginCreateTime != null and params.beginCreateTime != '' and params.endCreateTime != null and params.endCreateTime != ''"> and DATE_FORMAT(create_time, '%Y-%m-%d') between #{params.beginCreateTime} and #{params.endCreateTime}</if>
+        <where>
+            <if test="id != null ">and id = #{id}</if>
+            <if test="residentId != null">and resident_id = #{residentId}</if>
+            <if test="serviceType != null  and serviceType != ''">and service_type = #{serviceType}</if>
+            <if test="appointmentTitle != null  and appointmentTitle != ''">and appointment_title like concat('%',
+                #{appointmentTitle}, '%')
+            </if>
+            <if test="params.beginAppointmentTime != null and params.beginAppointmentTime != '' and params.endAppointmentTime != null and params.endAppointmentTime != ''">
+                and DATE_FORMAT(appointment_time, '%Y-%m-%d') between #{params.beginAppointmentTime} and
+                #{params.endAppointmentTime}
+            </if>
+            <if test="dateType != null and dateType != ''">and date_type = #{dateType}</if>
+            <if test="status != null  and status != ''">and status = #{status}</if>
+            <if test="appointmentUserId != null ">and appointment_user_id = #{appointmentUserId}</if>
+            <if test="userId != null ">and user_id = #{userId}</if>
+            <if test="createBy != null  and createBy != ''">and create_by like concat('%', #{createBy}, '%')</if>
+            <if test="params.beginCreateTime != null and params.beginCreateTime != '' and params.endCreateTime != null and params.endCreateTime != ''">
+                and DATE_FORMAT(create_time, '%Y-%m-%d') between #{params.beginCreateTime} and #{params.endCreateTime}
+            </if>
         </where>
     </select>
     
@@ -60,7 +67,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="appointmentTitle != null and appointmentTitle != ''">appointment_title,</if>
             <if test="appointmentReason != null and appointmentReason != ''">appointment_reason,</if>
             <if test="appointmentTime != null">appointment_time,</if>
-            <if test="dateType != null">date_type,</if>
+            <if test="dateType != null and dateType != ''">date_type,</if>
             <if test="status != null and status != ''">status,</if>
             <if test="appointmentUserId != null">appointment_user_id,</if>
             <if test="serviceTime != null">service_time,</if>
@@ -79,7 +86,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="appointmentTitle != null and appointmentTitle != ''">#{appointmentTitle},</if>
             <if test="appointmentReason != null and appointmentReason != ''">#{appointmentReason},</if>
             <if test="appointmentTime != null">#{appointmentTime},</if>
-            <if test="dateType != null">#{dateType},</if>
+            <if test="dateType != null and dateType != ''">#{dateType},</if>
             <if test="status != null and status != ''">#{status},</if>
             <if test="appointmentUserId != null">#{appointmentUserId},</if>
             <if test="serviceTime != null">#{serviceTime},</if>
@@ -102,7 +109,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="appointmentTitle != null and appointmentTitle != ''">appointment_title = #{appointmentTitle},</if>
             <if test="appointmentReason != null and appointmentReason != ''">appointment_reason = #{appointmentReason},</if>
             <if test="appointmentTime != null">appointment_time = #{appointmentTime},</if>
-            <if test="dateType != null">date_type = #{dateType},</if>
+            <if test="dateType != null and dateType != ''">date_type = #{dateType},</if>
             <if test="status != null and status != ''">status = #{status},</if>
             <if test="appointmentUserId != null">appointment_user_id = #{appointmentUserId},</if>
             <if test="serviceTime != null">service_time = #{serviceTime},</if>

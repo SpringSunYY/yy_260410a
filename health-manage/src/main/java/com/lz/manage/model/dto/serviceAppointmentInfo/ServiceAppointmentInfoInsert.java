@@ -37,8 +37,7 @@ public class ServiceAppointmentInfoInsert implements Serializable
     private Date appointmentTime;
 
     /** 具体时间 */
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    private Date dateType;
+    private String dateType;
 
     /** 状态 */
     private String status;
