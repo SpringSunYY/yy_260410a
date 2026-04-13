@@ -134,7 +134,7 @@
       <el-table-column label="测量时间" align="center" prop="measureTime" width="180" v-if="columns[2].visible"
                        :show-overflow-tooltip="true">
         <template #default="scope">
-          <span>{{ parseTime(scope.row.measureTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
+          <span>{{ parseTime(scope.row.measureTime, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
       <el-table-column label="身高" align="center" prop="height" v-if="columns[3].visible"
@@ -166,7 +166,7 @@
       <el-table-column label="创建时间" align="center" prop="createTime" width="180" v-if="columns[13].visible"
                        :show-overflow-tooltip="true">
         <template #default="scope">
-          <span>{{ parseTime(scope.row.createTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
+          <span>{{ parseTime(scope.row.createTime, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
       <el-table-column label="更新人" align="center" prop="updateBy" v-if="columns[14].visible"
@@ -174,7 +174,7 @@
       <el-table-column label="更新时间" align="center" prop="updateTime" width="180" v-if="columns[15].visible"
                        :show-overflow-tooltip="true">
         <template #default="scope">
-          <span>{{ parseTime(scope.row.updateTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
+          <span>{{ parseTime(scope.row.updateTime, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
       <el-table-column label="备注" align="center" prop="remark" v-if="columns[16].visible"

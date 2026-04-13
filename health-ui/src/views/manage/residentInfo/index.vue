@@ -110,7 +110,7 @@
       <el-table-column label="出生日期" align="center" prop="birthDateTime" width="180" v-if="columns[3].visible"
                        :show-overflow-tooltip="true">
         <template #default="scope">
-          <span>{{ parseTime(scope.row.birthDateTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
+          <span>{{ parseTime(scope.row.birthDateTime, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
       <el-table-column label="身份证号" align="center" prop="idCard" v-if="columns[4].visible"
@@ -135,7 +135,7 @@
       <el-table-column label="创建时间" align="center" prop="createTime" width="180" v-if="columns[12].visible"
                        :show-overflow-tooltip="true">
         <template #default="scope">
-          <span>{{ parseTime(scope.row.createTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
+          <span>{{ parseTime(scope.row.createTime, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
       <el-table-column label="更新人" align="center" prop="updateBy" v-if="columns[13].visible"
@@ -143,7 +143,7 @@
       <el-table-column label="更新时间" align="center" prop="updateTime" width="180" v-if="columns[14].visible"
                        :show-overflow-tooltip="true">
         <template #default="scope">
-          <span>{{ parseTime(scope.row.updateTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
+          <span>{{ parseTime(scope.row.updateTime, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
       <el-table-column label="备注" align="center" prop="remark" v-if="columns[15].visible"

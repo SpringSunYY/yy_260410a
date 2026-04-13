@@ -144,13 +144,13 @@
       <el-table-column label="入院时间" align="center" prop="inTime" width="180" v-if="columns[2].visible"
                        :show-overflow-tooltip="true">
         <template #default="scope">
-          <span>{{ parseTime(scope.row.inTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
+          <span>{{ parseTime(scope.row.inTime, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
       <el-table-column label="出院时间" align="center" prop="outTime" width="180" v-if="columns[3].visible"
                        :show-overflow-tooltip="true">
         <template #default="scope">
-          <span>{{ parseTime(scope.row.outTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
+          <span>{{ parseTime(scope.row.outTime, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
       <el-table-column label="住院机构" align="center" prop="hospitalName" v-if="columns[4].visible"
@@ -174,7 +174,7 @@
       <el-table-column label="创建时间" align="center" prop="createTime" width="180" v-if="columns[10].visible"
                        :show-overflow-tooltip="true">
         <template #default="scope">
-          <span>{{ parseTime(scope.row.createTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
+          <span>{{ parseTime(scope.row.createTime, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
       <el-table-column label="更新人" align="center" prop="updateBy" v-if="columns[11].visible"
@@ -182,7 +182,7 @@
       <el-table-column label="更新时间" align="center" prop="updateTime" width="180" v-if="columns[12].visible"
                        :show-overflow-tooltip="true">
         <template #default="scope">
-          <span>{{ parseTime(scope.row.updateTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
+          <span>{{ parseTime(scope.row.updateTime, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
       <el-table-column label="备注" align="center" prop="remark" v-if="columns[13].visible"
