@@ -18,7 +18,7 @@ public class ServiceAppointmentInfoInsert implements Serializable
     private static final long serialVersionUID = 1L;
 
     /** 居民 */
-    private String residentId;
+    private Long residentId;
 
     /** 服务类型 */
     private String serviceType;

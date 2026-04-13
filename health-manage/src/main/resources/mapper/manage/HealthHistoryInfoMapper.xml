@@ -32,7 +32,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectHealthHistoryInfoVo"/>
         <where>  
             <if test="id != null "> and id = #{id}</if>
-            <if test="residentId != null  and residentId != ''"> and resident_id = #{residentId}</if>
+            <if test="residentId != null"> and resident_id = #{residentId}</if>
             <if test="params.beginMeasureTime != null and params.beginMeasureTime != '' and params.endMeasureTime != null and params.endMeasureTime != ''"> and DATE_FORMAT(measure_time, '%Y-%m-%d') between #{params.beginMeasureTime} and #{params.endMeasureTime}</if>
             <if test="measureType != null  and measureType != ''"> and measure_type = #{measureType}</if>
             <if test="userId != null "> and user_id = #{userId}</if>
@@ -49,7 +49,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <insert id="insertHealthHistoryInfo" parameterType="HealthHistoryInfo" useGeneratedKeys="true" keyProperty="id">
         insert into tb_health_history_info
         <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="residentId != null and residentId != ''">resident_id,</if>
+            <if test="residentId != null">resident_id,</if>
             <if test="measureTime != null">measure_time,</if>
             <if test="height != null">height,</if>
             <if test="weight != null">weight,</if>
@@ -67,7 +67,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="remark != null">remark,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="residentId != null and residentId != ''">#{residentId},</if>
+            <if test="residentId != null">#{residentId},</if>
             <if test="measureTime != null">#{measureTime},</if>
             <if test="height != null">#{height},</if>
             <if test="weight != null">#{weight},</if>
@@ -89,7 +89,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <update id="updateHealthHistoryInfo" parameterType="HealthHistoryInfo">
         update tb_health_history_info
         <trim prefix="SET" suffixOverrides=",">
-            <if test="residentId != null and residentId != ''">resident_id = #{residentId},</if>
+            <if test="residentId != null">resident_id = #{residentId},</if>
             <if test="measureTime != null">measure_time = #{measureTime},</if>
             <if test="height != null">height = #{height},</if>
             <if test="weight != null">weight = #{weight},</if>

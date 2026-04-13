@@ -118,8 +118,8 @@ public class TreatmentInfoServiceImpl extends ServiceImpl<TreatmentInfoMapper, T
         Long id = treatmentInfoQuery.getId();
         queryWrapper.eq( StringUtils.isNotNull(id),"id",id);
 
-        String residentId = treatmentInfoQuery.getResidentId();
-        queryWrapper.eq(StringUtils.isNotEmpty(residentId) ,"resident_id",residentId);
+        Long residentId = treatmentInfoQuery.getResidentId();
+        queryWrapper.eq(StringUtils.isNotNull(residentId) ,"resident_id",residentId);
 
         Date visitTime = treatmentInfoQuery.getVisitTime();
         queryWrapper.between(StringUtils.isNotNull(params.get("beginVisitTime"))&&StringUtils.isNotNull(params.get("endVisitTime")),"visit_time",params.get("beginVisitTime"),params.get("endVisitTime"));

@@ -25,7 +25,7 @@ public class HealthHistoryInfoVo implements Serializable
     private Long id;
 
     /** 居民 */
-    private String residentId;
+    private Long residentId;
 
     /** 测量时间 */
     @JsonFormat(pattern = "yyyy-MM-dd")

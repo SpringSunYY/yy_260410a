@@ -118,8 +118,8 @@ public class HospitalizationInfoServiceImpl extends ServiceImpl<HospitalizationI
         Long id = hospitalizationInfoQuery.getId();
         queryWrapper.eq( StringUtils.isNotNull(id),"id",id);
 
-        String residentId = hospitalizationInfoQuery.getResidentId();
-        queryWrapper.eq(StringUtils.isNotEmpty(residentId) ,"resident_id",residentId);
+        Long residentId = hospitalizationInfoQuery.getResidentId();
+        queryWrapper.eq(StringUtils.isNotNull(residentId) ,"resident_id",residentId);
 
         Date inTime = hospitalizationInfoQuery.getInTime();
         queryWrapper.between(StringUtils.isNotNull(params.get("beginInTime"))&&StringUtils.isNotNull(params.get("endInTime")),"in_time",params.get("beginInTime"),params.get("endInTime"));

@@ -33,7 +33,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectServiceAppointmentInfoVo"/>
         <where>  
             <if test="id != null "> and id = #{id}</if>
-            <if test="residentId != null  and residentId != ''"> and resident_id = #{residentId}</if>
+            <if test="residentId != null"> and resident_id = #{residentId}</if>
             <if test="serviceType != null  and serviceType != ''"> and service_type = #{serviceType}</if>
             <if test="appointmentTitle != null  and appointmentTitle != ''"> and appointment_title like concat('%', #{appointmentTitle}, '%')</if>
             <if test="params.beginAppointmentTime != null and params.beginAppointmentTime != '' and params.endAppointmentTime != null and params.endAppointmentTime != ''"> and DATE_FORMAT(appointment_time, '%Y-%m-%d') between #{params.beginAppointmentTime} and #{params.endAppointmentTime}</if>
@@ -54,7 +54,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <insert id="insertServiceAppointmentInfo" parameterType="ServiceAppointmentInfo" useGeneratedKeys="true" keyProperty="id">
         insert into tb_service_appointment_info
         <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="residentId != null and residentId != ''">resident_id,</if>
+            <if test="residentId != null">resident_id,</if>
             <if test="serviceType != null and serviceType != ''">service_type,</if>
             <if test="contactMethod != null and contactMethod != ''">contact_method,</if>
             <if test="appointmentTitle != null and appointmentTitle != ''">appointment_title,</if>
@@ -73,7 +73,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="remark != null">remark,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="residentId != null and residentId != ''">#{residentId},</if>
+            <if test="residentId != null">#{residentId},</if>
             <if test="serviceType != null and serviceType != ''">#{serviceType},</if>
             <if test="contactMethod != null and contactMethod != ''">#{contactMethod},</if>
             <if test="appointmentTitle != null and appointmentTitle != ''">#{appointmentTitle},</if>
@@ -96,7 +96,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <update id="updateServiceAppointmentInfo" parameterType="ServiceAppointmentInfo">
         update tb_service_appointment_info
         <trim prefix="SET" suffixOverrides=",">
-            <if test="residentId != null and residentId != ''">resident_id = #{residentId},</if>
+            <if test="residentId != null">resident_id = #{residentId},</if>
             <if test="serviceType != null and serviceType != ''">service_type = #{serviceType},</if>
             <if test="contactMethod != null and contactMethod != ''">contact_method = #{contactMethod},</if>
             <if test="appointmentTitle != null and appointmentTitle != ''">appointment_title = #{appointmentTitle},</if>

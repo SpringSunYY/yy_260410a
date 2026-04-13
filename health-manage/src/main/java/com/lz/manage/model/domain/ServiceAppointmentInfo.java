@@ -32,7 +32,7 @@ public class ServiceAppointmentInfo implements Serializable
 
     /** 居民 */
     @Excel(name = "居民")
-    private String residentId;
+    private Long residentId;
 
     /** 服务类型 */
     @Excel(name = "服务类型", dictType = "healt_service_type")

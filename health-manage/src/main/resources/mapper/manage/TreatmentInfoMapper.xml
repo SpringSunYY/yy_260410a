@@ -27,7 +27,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectTreatmentInfoVo"/>
         <where>  
             <if test="id != null "> and id = #{id}</if>
-            <if test="residentId != null  and residentId != ''"> and resident_id = #{residentId}</if>
+            <if test="residentId != null"> and resident_id = #{residentId}</if>
             <if test="params.beginVisitTime != null and params.beginVisitTime != '' and params.endVisitTime != null and params.endVisitTime != ''"> and DATE_FORMAT(visit_time, '%Y-%m-%d') between #{params.beginVisitTime} and #{params.endVisitTime}</if>
             <if test="userId != null "> and user_id = #{userId}</if>
             <if test="createBy != null  and createBy != ''"> and create_by like concat('%', #{createBy}, '%')</if>
@@ -43,7 +43,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <insert id="insertTreatmentInfo" parameterType="TreatmentInfo" useGeneratedKeys="true" keyProperty="id">
         insert into tb_treatment_info
         <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="residentId != null and residentId != ''">resident_id,</if>
+            <if test="residentId != null">resident_id,</if>
             <if test="visitTime != null">visit_time,</if>
             <if test="diagnosis != null and diagnosis != ''">diagnosis,</if>
             <if test="prescription != null">prescription,</if>
@@ -56,7 +56,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="remark != null">remark,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="residentId != null and residentId != ''">#{residentId},</if>
+            <if test="residentId != null">#{residentId},</if>
             <if test="visitTime != null">#{visitTime},</if>
             <if test="diagnosis != null and diagnosis != ''">#{diagnosis},</if>
             <if test="prescription != null">#{prescription},</if>
@@ -73,7 +73,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <update id="updateTreatmentInfo" parameterType="TreatmentInfo">
         update tb_treatment_info
         <trim prefix="SET" suffixOverrides=",">
-            <if test="residentId != null and residentId != ''">resident_id = #{residentId},</if>
+            <if test="residentId != null">resident_id = #{residentId},</if>
             <if test="visitTime != null">visit_time = #{visitTime},</if>
             <if test="diagnosis != null and diagnosis != ''">diagnosis = #{diagnosis},</if>
             <if test="prescription != null">prescription = #{prescription},</if>

@@ -1,14 +1,13 @@
 package com.lz.manage.model.vo.healthRecordInfo;
 
-import java.io.Serializable;
-import java.util.Date;
-import java.util.Date;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.Data;
-import com.lz.common.annotation.Excel;
-import org.springframework.beans.BeanUtils;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.lz.manage.model.domain.HealthRecordInfo;
+import lombok.Data;
+import org.springframework.beans.BeanUtils;
+
+import java.io.Serializable;
+import java.util.Date;
+
 /**
  * 健康档案Vo对象 tb_health_record_info
  *
@@ -16,56 +15,85 @@ import com.lz.manage.model.domain.HealthRecordInfo;
  * @date 2026-04-13
  */
 @Data
-public class HealthRecordInfoVo implements Serializable
-{
+public class HealthRecordInfoVo implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    /** 编号 */
+    /**
+     * 编号
+     */
     private Long id;
 
-    /** 居民 */
-    private String residentId;
+    /**
+     * 居民
+     */
+    private Long residentId;
+    private String residentName;
 
-    /** 档案编号 */
+    /**
+     * 档案编号
+     */
     private String recordCode;
 
-    /** 血型 */
+    /**
+     * 血型
+     */
     private String bloodType;
 
-    /** RH类型 */
+    /**
+     * RH类型
+     */
     private String rhType;
 
-    /** 既往病史 */
+    /**
+     * 既往病史
+     */
     private String pastHistory;
 
-    /** 家族病史 */
+    /**
+     * 家族病史
+     */
     private String familyHistory;
 
-    /** 附件 */
+    /**
+     * 附件
+     */
     private String appendix;
 
-    /** 所属用户 */
+    /**
+     * 所属用户
+     */
     private Long userId;
+    private String userName;
 
-    /** 创建人 */
+    /**
+     * 创建人
+     */
     private String createBy;
 
-    /** 创建时间 */
+    /**
+     * 创建时间
+     */
     @JsonFormat(pattern = "yyyy-MM-dd")
     private Date createTime;
 
-    /** 更新人 */
+    /**
+     * 更新人
+     */
     private String updateBy;
 
-    /** 更新时间 */
+    /**
+     * 更新时间
+     */
     @JsonFormat(pattern = "yyyy-MM-dd")
     private Date updateTime;
 
-    /** 备注 */
+    /**
+     * 备注
+     */
     private String remark;
 
 
-     /**
+    /**
      * 对象转封装类
      *
      * @param healthRecordInfo HealthRecordInfo实体对象

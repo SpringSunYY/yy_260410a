@@ -24,7 +24,7 @@ public class TreatmentInfoVo implements Serializable
     private Long id;
 
     /** 居民 */
-    private String residentId;
+    private Long residentId;
 
     /** 就诊时间 */
     @JsonFormat(pattern = "yyyy-MM-dd")

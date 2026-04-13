@@ -26,7 +26,7 @@ public class ServiceAppointmentInfoQuery implements Serializable
     private Long id;
 
     /** 居民 */
-    private String residentId;
+    private Long residentId;
 
     /** 服务类型 */
     private String serviceType;

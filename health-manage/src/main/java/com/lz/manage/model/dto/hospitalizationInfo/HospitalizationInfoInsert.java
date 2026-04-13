@@ -18,7 +18,7 @@ public class HospitalizationInfoInsert implements Serializable
     private static final long serialVersionUID = 1L;
 
     /** 居民 */
-    private String residentId;
+    private Long residentId;
 
     /** 入院时间 */
     @JsonFormat(pattern = "yyyy-MM-dd")

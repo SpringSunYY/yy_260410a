@@ -32,7 +32,7 @@ public class TreatmentInfo implements Serializable
 
     /** 居民 */
     @Excel(name = "居民")
-    private String residentId;
+    private Long residentId;
 
     /** 就诊时间 */
     @JsonFormat(pattern = "yyyy-MM-dd")

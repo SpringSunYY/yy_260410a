@@ -119,8 +119,8 @@ public class HealthHistoryInfoServiceImpl extends ServiceImpl<HealthHistoryInfoM
         Long id = healthHistoryInfoQuery.getId();
         queryWrapper.eq( StringUtils.isNotNull(id),"id",id);
 
-        String residentId = healthHistoryInfoQuery.getResidentId();
-        queryWrapper.eq(StringUtils.isNotEmpty(residentId) ,"resident_id",residentId);
+        Long residentId = healthHistoryInfoQuery.getResidentId();
+        queryWrapper.eq(StringUtils.isNotNull(residentId) ,"resident_id",residentId);
 
         Date measureTime = healthHistoryInfoQuery.getMeasureTime();
         queryWrapper.between(StringUtils.isNotNull(params.get("beginMeasureTime"))&&StringUtils.isNotNull(params.get("endMeasureTime")),"measure_time",params.get("beginMeasureTime"),params.get("endMeasureTime"));

@@ -28,7 +28,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectHealthRecordInfoList" parameterType="HealthRecordInfo" resultMap="HealthRecordInfoResult">
         <include refid="selectHealthRecordInfoVo"/>
         <where>  
-            <if test="residentId != null  and residentId != ''"> and resident_id = #{residentId}</if>
+            <if test="residentId != null"> and resident_id = #{residentId}</if>
             <if test="recordCode != null  and recordCode != ''"> and record_code like concat('%', #{recordCode}, '%')</if>
             <if test="bloodType != null  and bloodType != ''"> and blood_type = #{bloodType}</if>
             <if test="rhType != null  and rhType != ''"> and rh_type = #{rhType}</if>
@@ -46,7 +46,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <insert id="insertHealthRecordInfo" parameterType="HealthRecordInfo" useGeneratedKeys="true" keyProperty="id">
         insert into tb_health_record_info
         <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="residentId != null and residentId != ''">resident_id,</if>
+            <if test="residentId != null">resident_id,</if>
             <if test="recordCode != null and recordCode != ''">record_code,</if>
             <if test="bloodType != null and bloodType != ''">blood_type,</if>
             <if test="rhType != null and rhType != ''">rh_type,</if>
@@ -61,7 +61,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="remark != null">remark,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="residentId != null and residentId != ''">#{residentId},</if>
+            <if test="residentId != null">#{residentId},</if>
             <if test="recordCode != null and recordCode != ''">#{recordCode},</if>
             <if test="bloodType != null and bloodType != ''">#{bloodType},</if>
             <if test="rhType != null and rhType != ''">#{rhType},</if>
@@ -80,7 +80,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <update id="updateHealthRecordInfo" parameterType="HealthRecordInfo">
         update tb_health_record_info
         <trim prefix="SET" suffixOverrides=",">
-            <if test="residentId != null and residentId != ''">resident_id = #{residentId},</if>
+            <if test="residentId != null">resident_id = #{residentId},</if>
             <if test="recordCode != null and recordCode != ''">record_code = #{recordCode},</if>
             <if test="bloodType != null and bloodType != ''">blood_type = #{bloodType},</if>
             <if test="rhType != null and rhType != ''">rh_type = #{rhType},</if>

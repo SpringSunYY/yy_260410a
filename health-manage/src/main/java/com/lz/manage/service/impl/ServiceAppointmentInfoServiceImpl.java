@@ -118,8 +118,8 @@ public class ServiceAppointmentInfoServiceImpl extends ServiceImpl<ServiceAppoin
         Long id = serviceAppointmentInfoQuery.getId();
         queryWrapper.eq( StringUtils.isNotNull(id),"id",id);
 
-        String residentId = serviceAppointmentInfoQuery.getResidentId();
-        queryWrapper.eq(StringUtils.isNotEmpty(residentId) ,"resident_id",residentId);
+        Long residentId = serviceAppointmentInfoQuery.getResidentId();
+        queryWrapper.eq(StringUtils.isNotNull(residentId) ,"resident_id",residentId);
 
         String serviceType = serviceAppointmentInfoQuery.getServiceType();
         queryWrapper.eq(StringUtils.isNotEmpty(serviceType) ,"service_type",serviceType);

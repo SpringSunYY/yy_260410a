@@ -23,7 +23,7 @@ public class HealthRecordInfoQuery implements Serializable
     private static final long serialVersionUID = 1L;
 
     /** 居民 */
-    private String residentId;
+    private Long residentId;
 
     /** 档案编号 */
     private String recordCode;

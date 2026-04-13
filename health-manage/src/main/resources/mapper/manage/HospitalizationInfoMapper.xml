@@ -29,7 +29,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectHospitalizationInfoVo"/>
         <where>  
             <if test="id != null "> and id = #{id}</if>
-            <if test="residentId != null  and residentId != ''"> and resident_id = #{residentId}</if>
+            <if test="residentId != null"> and resident_id = #{residentId}</if>
             <if test="params.beginInTime != null and params.beginInTime != '' and params.endInTime != null and params.endInTime != ''"> and DATE_FORMAT(in_time, '%Y-%m-%d') between #{params.beginInTime} and #{params.endInTime}</if>
             <if test="params.beginOutTime != null and params.beginOutTime != '' and params.endOutTime != null and params.endOutTime != ''"> and DATE_FORMAT(out_time, '%Y-%m-%d') between #{params.beginOutTime} and #{params.endOutTime}</if>
             <if test="hospitalName != null  and hospitalName != ''"> and hospital_name like concat('%', #{hospitalName}, '%')</if>
@@ -48,7 +48,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <insert id="insertHospitalizationInfo" parameterType="HospitalizationInfo" useGeneratedKeys="true" keyProperty="id">
         insert into tb_hospitalization_info
         <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="residentId != null and residentId != ''">resident_id,</if>
+            <if test="residentId != null">resident_id,</if>
             <if test="inTime != null">in_time,</if>
             <if test="outTime != null">out_time,</if>
             <if test="hospitalName != null and hospitalName != ''">hospital_name,</if>
@@ -63,7 +63,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="remark != null">remark,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="residentId != null and residentId != ''">#{residentId},</if>
+            <if test="residentId != null">#{residentId},</if>
             <if test="inTime != null">#{inTime},</if>
             <if test="outTime != null">#{outTime},</if>
             <if test="hospitalName != null and hospitalName != ''">#{hospitalName},</if>
@@ -82,7 +82,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <update id="updateHospitalizationInfo" parameterType="HospitalizationInfo">
         update tb_hospitalization_info
         <trim prefix="SET" suffixOverrides=",">
-            <if test="residentId != null and residentId != ''">resident_id = #{residentId},</if>
+            <if test="residentId != null">resident_id = #{residentId},</if>
             <if test="inTime != null">in_time = #{inTime},</if>
             <if test="outTime != null">out_time = #{outTime},</if>
             <if test="hospitalName != null and hospitalName != ''">hospital_name = #{hospitalName},</if>
