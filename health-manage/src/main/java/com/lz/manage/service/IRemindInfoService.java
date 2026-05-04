@@ -79,4 +79,6 @@ public interface IRemindInfoService extends IService<RemindInfo>
      * @return RemindInfoVO集合
      */
     List<RemindInfoVo> convertVoList(List<RemindInfo> remindInfoList);
+
+    void autoSendRemind();
 }

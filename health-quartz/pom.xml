@@ -35,6 +35,11 @@
             <artifactId>health-common</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>com.lz</groupId>
+            <artifactId>health-manage</artifactId>
+        </dependency>
+
     </dependencies>
 
 </project>
