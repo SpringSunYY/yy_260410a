@@ -58,10 +58,12 @@
           <span v-if="!loading">登 录</span>
           <span v-else>登 录 中...</span>
         </el-button>
-        <div style="float: right;" v-if="register">
-          <router-link class="link-type" :to="'/register'">立即注册</router-link>
-        </div>
       </el-form-item>
+      <div class="login-links">
+        <router-link class="link-type" :to="'/forget'" v-if="forget">忘记密码？</router-link>
+        <span class="split-line" v-if="register && forget">|</span>
+        <router-link class="link-type" :to="'/register'" v-if="register">立即注册</router-link>
+      </div>
     </el-form>
     <!--  底部  -->
     <div class="el-login-footer">
@@ -104,6 +106,8 @@ const loading = ref(false)
 const captchaEnabled = ref(true)
 // 注册开关
 const register = ref(true)
+// 找回密码开关
+const forget = ref(true)
 const redirect = ref(undefined)
 
 watch(route, (newRoute) => {
@@ -242,5 +246,26 @@ getCookie()
 .login-code-img {
   height: 40px;
   padding-left: 12px;
+}
+
+.login-links {
+  text-align: center;
+  margin-top: -10px;
+  margin-bottom: 15px;
+
+  .link-type {
+    color: #1890ff;
+    text-decoration: none;
+    font-size: 14px;
+
+    &:hover {
+      color: #40a9ff;
+    }
+  }
+
+  .split-line {
+    color: #dcdfe6;
+    margin: 0 12px;
+  }
 }
 </style>

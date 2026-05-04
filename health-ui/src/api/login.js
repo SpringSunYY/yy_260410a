@@ -67,3 +67,27 @@ export function getCodeImg() {
     timeout: 20000
   })
 }
+
+// 发送找回密码验证码
+export function sendVerifyCode(username) {
+  return request({
+    url: '/sendVerifyCode',
+    headers: {
+      isToken: false
+    },
+    method: 'post',
+    data: { username }
+  })
+}
+
+// 找回密码
+export function forgetPassword(data) {
+  return request({
+    url: '/forgetPassword',
+    headers: {
+      isToken: false
+    },
+    method: 'post',
+    data: data
+  })
+}
