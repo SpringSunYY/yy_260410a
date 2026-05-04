@@ -2,6 +2,8 @@ package com.lz.manage.service;
 
 import java.util.List;
 import com.lz.manage.model.domain.HealthHistoryInfo;
+import com.lz.manage.model.dto.healthHistoryInfo.HealthHistoryInfoStatisticsQuery;
+import com.lz.manage.model.vo.healthHistoryInfo.HealthHistoryInfoStatisticsVo;
 import com.lz.manage.model.vo.healthHistoryInfo.HealthHistoryInfoVo;
 import com.lz.manage.model.dto.healthHistoryInfo.HealthHistoryInfoQuery;
 
@@ -79,4 +81,6 @@ public interface IHealthHistoryInfoService extends IService<HealthHistoryInfo>
      * @return HealthHistoryInfoVO集合
      */
     List<HealthHistoryInfoVo> convertVoList(List<HealthHistoryInfo> healthHistoryInfoList);
+
+    List<HealthHistoryInfoStatisticsVo> healthHistoryInfoStatistics(HealthHistoryInfoStatisticsQuery healthHistoryInfoQuery);
 }

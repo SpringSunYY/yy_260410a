@@ -74,6 +74,22 @@
         <include refid="selectHealthHistoryInfoVo"/>
         where id = #{id}
     </select>
+    <select id="healthHistoryInfoStatistics"
+            resultType="com.lz.manage.model.vo.healthHistoryInfo.HealthHistoryInfoStatisticsVo">
+        SELECT
+            DATE(measure_time) AS measureTime,
+            ROUND(AVG(blood_glucose), 2) AS bloodGlucose,
+            ROUND(AVG(blood_lipids), 2) AS bloodLipids,
+            ROUND(AVG(blood_pressure), 2) AS bloodPressure
+        FROM tb_health_history_info
+        WHERE resident_id = #{residentId}
+          AND DATE(measure_time) BETWEEN #{startTime} AND #{endTime}
+        <if test="measureType != null and measureType != ''">
+          AND measure_type = #{measureType}
+        </if>
+        GROUP BY DATE(measure_time)
+        ORDER BY measureTime
+    </select>
 
     <insert id="insertHealthHistoryInfo" parameterType="HealthHistoryInfo" useGeneratedKeys="true" keyProperty="id">
         insert into tb_health_history_info

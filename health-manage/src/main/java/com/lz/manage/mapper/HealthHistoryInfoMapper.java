@@ -3,6 +3,8 @@ package com.lz.manage.mapper;
 import java.util.List;
 import com.lz.manage.model.domain.HealthHistoryInfo;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.lz.manage.model.dto.healthHistoryInfo.HealthHistoryInfoStatisticsQuery;
+import com.lz.manage.model.vo.healthHistoryInfo.HealthHistoryInfoStatisticsVo;
 
 /**
  * 健康记录Mapper接口
@@ -59,4 +61,6 @@ public interface HealthHistoryInfoMapper extends BaseMapper<HealthHistoryInfo>
      * @return 结果
      */
     public int deleteHealthHistoryInfoByIds(Long[] ids);
+
+    List<HealthHistoryInfoStatisticsVo> healthHistoryInfoStatistics(HealthHistoryInfoStatisticsQuery healthHistoryInfoQuery);
 }

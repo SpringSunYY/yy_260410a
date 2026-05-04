@@ -2,12 +2,12 @@
   <div class="app-container">
     <!-- 查询条件卡片 -->
     <el-card class="search-card" shadow="hover">
-      <el-form :model="statisticsQuery" ref="queryRef" :inline="true" label-width="80px">
+      <el-form :model="tableQuery" ref="queryRef" :inline="true" label-width="80px">
         <el-row :gutter="20">
           <el-col :xs="24" :sm="12" :md="8" :lg="6">
-            <el-form-item label="居民" prop="userId">
+            <el-form-item label="居民" prop="residentId">
               <el-select
-                  v-model="statisticsQuery.userId"
+                  v-model="tableQuery.residentId"
                   filterable
                   remote
                   reserve-keyword
@@ -42,7 +42,7 @@
           </el-col>
           <el-col :xs="24" :sm="12" :md="8" :lg="6">
             <el-form-item label="测量类型" prop="measureType">
-              <el-select v-model="statisticsQuery.measureType" placeholder="请选择测量类型" clearable>
+              <el-select v-model="tableQuery.measureType" placeholder="请选择测量类型" clearable>
                 <el-option
                     v-for="dict in health_measure_type"
                     :key="dict.value"
@@ -67,21 +67,30 @@
       <el-col :xs="24" :sm="12" :md="8">
         <el-card shadow="hover" class="chart-card">
           <div class="chart-placeholder">
-            <LineAvgCharts/>
+            <LineAvgCharts
+                :chart-data="bloodLipidsStatisticsData"
+                :chart-name="bloodLipidsStatisticsName"
+            />
           </div>
         </el-card>
       </el-col>
       <el-col :xs="24" :sm="12" :md="8">
         <el-card shadow="hover" class="chart-card">
           <div class="chart-placeholder">
-            <BarAvgCharts/>
+            <BarAvgCharts
+                :chart-data="bloodPressureStatisticsData"
+                :chart-name="bloodPressureStatisticsName"
+            />
           </div>
         </el-card>
       </el-col>
       <el-col :xs="24" :sm="12" :md="8">
         <el-card shadow="hover" class="chart-card">
           <div class="chart-placeholder">
-            <BarAutoCarouselCharts/>
+            <BarAutoCarouselCharts
+                :chart-data="bloodGlucoseStatisticsData"
+                :chart-name="bloodGlucoseStatisticsName"
+            />
           </div>
         </el-card>
       </el-col>
@@ -92,7 +101,7 @@
       <el-table v-loading="loading" :data="healthHistoryInfoList">
         <el-table-column label="编号" align="center" prop="id" width="80"/>
         <el-table-column label="居民" align="center" prop="residentName"/>
-        <el-table-column label="测量时间" align="center" prop="measureTime" width="120">
+        <el-table-column label="测量时间" align="center" prop="measureTime" width="160">
           <template #default="scope">
             <span>{{ parseTime(scope.row.measureTime, '{y}-{m}-{d}') }}</span>
           </template>
@@ -102,8 +111,9 @@
         <el-table-column label="收缩压" align="center" prop="sbp" width="100"/>
         <el-table-column label="舒张压" align="center" prop="dbp" width="100"/>
         <el-table-column label="血糖" align="center" prop="bloodGlucose" width="100"/>
-        <el-table-column label="心率" align="center" prop="heartRate" width="80"/>
+        <el-table-column label="心率" align="center" prop="heartRate" width="100"/>
         <el-table-column label="血脂" align="center" prop="bloodLipids" width="100"/>
+        <el-table-column label="血压" align="center" prop="bloodPressure" width="100"/>
         <el-table-column label="测量类型" align="center" width="100">
           <template #default="scope">
             <dict-tag :options="health_measure_type" :value="scope.row.measureType"/>
@@ -113,8 +123,8 @@
       <pagination
           v-show="total>0"
           :total="total"
-          v-model:page="statisticsQuery.pageNum"
-          v-model:limit="statisticsQuery.pageSize"
+          v-model:page="tableQuery.pageNum"
+          v-model:limit="tableQuery.pageSize"
           @pagination="getList"
       />
     </el-card>
@@ -122,7 +132,7 @@
 </template>
 
 <script setup name="healthStatisticsInfo">
-import {listHealthHistoryInfo} from "@/api/manage/healthHistoryInfo";
+import {listHealthHistoryInfo, statisticsHealthHistoryInfo} from "@/api/manage/healthHistoryInfo";
 import {listResidentInfo} from "@/api/manage/residentInfo.js";
 import LineAvgCharts from "@/components/Echarts/LineAvgCharts.vue";
 import BarAvgCharts from "@/components/Echarts/BarAvgCharts.vue";
@@ -137,45 +147,110 @@ const daterangeMeasureTime = ref([]);
 const healthHistoryInfoList = ref([]);
 
 const data = reactive({
-  statisticsQuery: {
+  tableQuery: {
     pageNum: 1,
     pageSize: 10,
-    userId: null,
+    residentId: null,
     measureType: null,
-    createBy: null,
-    params: {}
+    params: {},
+  },
+  statisticsQuery: {
+    residentId: null,
+    measureType: null,
+    startTime: null,
+    endTime: null,
   }
 });
 
-const {statisticsQuery} = toRefs(data);
+const {tableQuery, statisticsQuery} = toRefs(data);
 
 /** 查询健康记录列表 */
 function getList() {
-  loading.value = true;
   if (daterangeMeasureTime.value && daterangeMeasureTime.value.length === 2) {
-    statisticsQuery.value.params.beginMeasureTime = daterangeMeasureTime.value[0];
-    statisticsQuery.value.params.endMeasureTime = daterangeMeasureTime.value[1];
+    tableQuery.value.params.beginMeasureTime = daterangeMeasureTime.value[0];
+    tableQuery.value.params.endMeasureTime = daterangeMeasureTime.value[1];
   } else {
-    statisticsQuery.value.params = {};
+    tableQuery.value.params = {};
   }
-  listHealthHistoryInfo(statisticsQuery.value).then(response => {
+  if (!tableQuery.value.residentId && residentList.value && residentList.value.length > 0) {
+    tableQuery.value.residentId = residentList.value[0].id
+  }
+  loading.value = true;
+  listHealthHistoryInfo(tableQuery.value).then(response => {
     healthHistoryInfoList.value = response.rows;
     total.value = response.total;
     loading.value = false;
   });
 }
 
+const bloodGlucoseStatisticsData = ref({
+  names: [],
+  values: []
+})
+const bloodGlucoseStatisticsName = ref('血糖')
+const bloodPressureStatisticsData = ref({
+  names: [],
+  values: []
+})
+const bloodPressureStatisticsName = ref('血压')
+const bloodLipidsStatisticsData = ref({
+  names: [],
+  values: []
+})
+const bloodLipidsStatisticsName = ref('血脂')
+
+function getStatistics() {
+  statisticsQuery.value.residentId = tableQuery.value.residentId
+  if (!statisticsQuery.value.residentId && residentList.value && residentList.value.length > 0) {
+    statisticsQuery.value.residentId = residentList.value[0].id
+    tableQuery.value.residentId = residentList.value[0].id
+  }
+  statisticsQuery.value.measureType = tableQuery.value.measureType
+  statisticsQuery.value.startTime = daterangeMeasureTime.value[0]
+  statisticsQuery.value.endTime = daterangeMeasureTime.value[1]
+  statisticsHealthHistoryInfo(statisticsQuery.value).then(res => {
+    if (!res.data.length > 0) return
+    let names = []
+    let bloodLipids = []
+    let bloodPressure = []
+    let bloodGlucose = []
+    res.data.forEach(item => {
+      names.push(item.measureTime)
+      bloodLipids.push(item.bloodLipids)
+      bloodPressure.push(item.bloodPressure)
+      bloodGlucose.push(item.bloodGlucose)
+    })
+    bloodGlucoseStatisticsData.value = {
+      names,
+      values: bloodGlucose
+    }
+    bloodPressureStatisticsData.value = {
+      names,
+      values: bloodPressure
+    }
+    bloodLipidsStatisticsData.value = {
+      names,
+      values: bloodLipids
+    }
+  })
+}
+
+function getQuery() {
+  getList()
+  getStatistics()
+}
+
 /** 搜索按钮操作 */
 function handleQuery() {
-  statisticsQuery.value.pageNum = 1;
-  getList();
+  tableQuery.value.pageNum = 1;
+  getQuery();
 }
 
 /** 重置按钮操作 */
 function resetQuery() {
   daterangeMeasureTime.value = getLast14DaysRange();
   proxy.resetForm("queryRef");
-  statisticsQuery.value = {
+  tableQuery.value = {
     pageNum: 1,
     pageSize: 10,
     userId: null,
@@ -195,9 +270,9 @@ const residentQueryParams = reactive({
   residentName: null,
 });
 
-const getResidentList = () => {
+const getResidentList = async () => {
   residentLoading.value = true;
-  listResidentInfo(residentQueryParams).then(response => {
+  await listResidentInfo(residentQueryParams).then(response => {
     residentList.value = response.rows;
     residentLoading.value = false;
   });
@@ -222,10 +297,10 @@ function getLast14DaysRange() {
   return [formatDate(startDate), formatDate(today)];
 }
 
-onMounted(() => {
+onMounted(async () => {
   daterangeMeasureTime.value = getLast14DaysRange();
-  getResidentList();
-  getList();
+  await getResidentList();
+  getQuery();
 });
 </script>
 

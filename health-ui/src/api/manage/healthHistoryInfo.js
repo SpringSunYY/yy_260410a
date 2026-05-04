@@ -42,3 +42,12 @@ export function delHealthHistoryInfo(id) {
     method: 'delete'
   })
 }
+
+//统计
+export function statisticsHealthHistoryInfo(query) {
+  return request({
+    url: '/manage/healthHistoryInfo/statistics',
+    method: 'get',
+    params: query
+  })
+}

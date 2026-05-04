@@ -12,6 +12,8 @@ import com.lz.manage.mapper.HealthHistoryInfoMapper;
 import com.lz.manage.model.domain.HealthHistoryInfo;
 import com.lz.manage.model.domain.ResidentInfo;
 import com.lz.manage.model.dto.healthHistoryInfo.HealthHistoryInfoQuery;
+import com.lz.manage.model.dto.healthHistoryInfo.HealthHistoryInfoStatisticsQuery;
+import com.lz.manage.model.vo.healthHistoryInfo.HealthHistoryInfoStatisticsVo;
 import com.lz.manage.model.vo.healthHistoryInfo.HealthHistoryInfoVo;
 import com.lz.manage.service.IHealthHistoryInfoService;
 import com.lz.manage.service.IResidentInfoService;
@@ -178,5 +180,10 @@ public class HealthHistoryInfoServiceImpl extends ServiceImpl<HealthHistoryInfoM
             return Collections.emptyList();
         }
         return healthHistoryInfoList.stream().map(HealthHistoryInfoVo::objToVo).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<HealthHistoryInfoStatisticsVo> healthHistoryInfoStatistics(HealthHistoryInfoStatisticsQuery healthHistoryInfoQuery) {
+        return healthHistoryInfoMapper.healthHistoryInfoStatistics(healthHistoryInfoQuery);
     }
 }

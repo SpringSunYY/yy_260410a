@@ -2,9 +2,12 @@ package com.lz.manage.controller;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+import com.lz.manage.model.dto.healthHistoryInfo.HealthHistoryInfoStatisticsQuery;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.access.prepost.PreAuthorize;
 import jakarta.annotation.Resource;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -113,5 +116,11 @@ public class HealthHistoryInfoController extends BaseController
     public AjaxResult remove(@PathVariable Long[] ids)
     {
         return toAjax(healthHistoryInfoService.deleteHealthHistoryInfoByIds(ids));
+    }
+
+    @PreAuthorize("@ss.hasPermi('manage:healthHistoryInfo:statistics')")
+    @GetMapping("/statistics")
+    public AjaxResult healthHistoryInfoStatistics(@Validated HealthHistoryInfoStatisticsQuery healthHistoryInfoQuery){
+        return success(healthHistoryInfoService.healthHistoryInfoStatistics(healthHistoryInfoQuery));
     }
 }
