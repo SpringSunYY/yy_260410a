@@ -143,35 +143,37 @@
                        :show-overflow-tooltip="true"/>
       <el-table-column label="血脂" align="center" prop="bloodLipids" v-if="columns[9].visible"
                        :show-overflow-tooltip="true"/>
-      <el-table-column label="测量类型" align="center" prop="measureType" v-if="columns[10].visible">
+      <el-table-column label="血压" align="center" prop="bloodPressure" v-if="columns[10].visible"
+                       :show-overflow-tooltip="true"/>
+      <el-table-column label="测量类型" align="center" prop="measureType" v-if="columns[11].visible">
         <template #default="scope">
           <dict-tag :options="health_measure_type" :value="scope.row.measureType"/>
         </template>
       </el-table-column>
-      <el-table-column label="附件" align="center" prop="appendix" width="100" v-if="columns[11].visible">
+      <el-table-column label="附件" align="center" prop="appendix" width="100" v-if="columns[12].visible">
         <template #default="scope">
           <file-view :file-url="scope.row.appendix"/>
         </template>
       </el-table-column>
-      <el-table-column label="所属用户" align="center" prop="userName" v-if="columns[12].visible"
+      <el-table-column label="所属用户" align="center" prop="userName" v-if="columns[13].visible"
                        :show-overflow-tooltip="true"/>
-      <el-table-column label="创建人" align="center" prop="createBy" v-if="columns[13].visible"
+      <el-table-column label="创建人" align="center" prop="createBy" v-if="columns[14].visible"
                        :show-overflow-tooltip="true"/>
-      <el-table-column label="创建时间" align="center" prop="createTime" width="180" v-if="columns[14].visible"
+      <el-table-column label="创建时间" align="center" prop="createTime" width="180" v-if="columns[15].visible"
                        :show-overflow-tooltip="true">
         <template #default="scope">
           <span>{{ parseTime(scope.row.createTime, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="更新人" align="center" prop="updateBy" v-if="columns[15].visible"
+      <el-table-column label="更新人" align="center" prop="updateBy" v-if="columns[16].visible"
                        :show-overflow-tooltip="true"/>
-      <el-table-column label="更新时间" align="center" prop="updateTime" width="180" v-if="columns[16].visible"
+      <el-table-column label="更新时间" align="center" prop="updateTime" width="180" v-if="columns[17].visible"
                        :show-overflow-tooltip="true">
         <template #default="scope">
           <span>{{ parseTime(scope.row.updateTime, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="备注" align="center" prop="remark" v-if="columns[17].visible"
+      <el-table-column label="备注" align="center" prop="remark" v-if="columns[18].visible"
                        :show-overflow-tooltip="true"/>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template #default="scope">
@@ -244,6 +246,9 @@
         </el-form-item>
         <el-form-item label="血脂" prop="bloodLipids">
           <el-input-number style="width: 100%;" :min="0" v-model="form.bloodLipids" placeholder="请输入血脂"/>
+        </el-form-item>
+        <el-form-item label="血压" prop="bloodPressure">
+          <el-input-number style="width: 100%;" :min="0" v-model="form.bloodPressure" placeholder="请输入血压"/>
         </el-form-item>
         <el-form-item label="测量类型" prop="measureType">
           <el-select v-model="form.measureType" placeholder="请选择测量类型">
@@ -344,6 +349,7 @@ const data = reactive({
     {key: 7, label: '血糖mmol/L', visible: true},
     {key: 8, label: '心率次/分', visible: true},
     {key: 9, label: '血脂', visible: true},
+    {key: 10, label: '血压', visible: true},
     {key: 11, label: '测量类型', visible: true},
     {key: 12, label: '附件', visible: true},
     {key: 13, label: '所属用户', visible: true},
@@ -395,6 +401,7 @@ function reset() {
     bloodGlucose: null,
     heartRate: null,
     bloodLipids: null,
+    bloodPressure: null,
     measureType: null,
     appendix: null,
     userId: null,
@@ -461,7 +468,8 @@ function submitForm() {
           customClass: 'health-warn-modal'
         }).then(() => {
           submitData();
-        }).catch(() => {});
+        }).catch(() => {
+        });
       } else {
         submitData();
       }
@@ -489,7 +497,7 @@ function submitData() {
 /** 检查健康指标是否异常 */
 function checkHealthIndicators() {
   const warnings = [];
-  const { height, weight, sbp, dbp, bloodGlucose, heartRate, bloodLipids } = form.value;
+  const {height, weight, sbp, dbp, bloodGlucose, heartRate, bloodLipids, bloodPressure} = form.value;
 
   // 身高异常（过高或过低）：正常成人身高范围 100cm - 220cm
   if (height !== null && height !== undefined) {
@@ -547,6 +555,15 @@ function checkHealthIndicators() {
       warnings.push(`血脂过低，当前值：${bloodLipids}mmol/L（正常范围：2.0-5.2mmol/L）`);
     } else if (bloodLipids > 5.2) {
       warnings.push(`血脂过高，当前值：${bloodLipids}mmol/L（正常范围：2.0-5.2mmol/L）`);
+    }
+  }
+
+  if (bloodPressure !== null && bloodPressure !== undefined) {
+    // 只有 bloodPressure 时，按收缩压标准判断（正常范围 90-140mmHg）
+    if (bloodPressure < 90) {
+      warnings.push(`血压过低，当前值：${bloodPressure}mmHg（正常范围：90-140mmHg）`);
+    } else if (bloodPressure > 140) {
+      warnings.push(`血压过高，当前值：${bloodPressure}mmHg（正常范围：90-140mmHg）`);
     }
   }
 

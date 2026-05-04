@@ -70,6 +70,10 @@ public class HealthHistoryInfoEdit implements Serializable {
      */
     private Long bloodLipids;
 
+    /**
+     * 血压
+     */
+    private Long bloodPressure;
 
     /**
      * 测量类型

@@ -90,6 +90,11 @@ public class HealthHistoryInfo implements Serializable {
     @Excel(name = "血脂")
     private Long bloodLipids;
 
+    /**
+     * 血压
+     */
+    @Excel(name = "血压")
+    private Long bloodPressure;
 
     /**
      * 测量类型

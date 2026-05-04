@@ -15,6 +15,7 @@
         <result property="bloodGlucose" column="blood_glucose"/>
         <result property="heartRate" column="heart_rate"/>
         <result property="bloodLipids" column="blood_lipids"/>
+        <result property="bloodPressure"    column="blood_pressure"    />
         <result property="measureType" column="measure_type"/>
         <result property="appendix" column="appendix"/>
         <result property="userId" column="user_id"/>
@@ -36,6 +37,7 @@
                blood_glucose,
                heart_rate,
                blood_lipids,
+               blood_pressure,
                measure_type,
                appendix,
                user_id,
@@ -85,6 +87,7 @@
             <if test="bloodGlucose != null">blood_glucose,</if>
             <if test="heartRate != null">heart_rate,</if>
             <if test="bloodLipids != null">blood_lipids,</if>
+            <if test="bloodPressure != null">blood_pressure,</if>
             <if test="measureType != null and measureType != ''">measure_type,</if>
             <if test="appendix != null">appendix,</if>
             <if test="userId != null">user_id,</if>
@@ -104,6 +107,7 @@
             <if test="bloodGlucose != null">#{bloodGlucose},</if>
             <if test="heartRate != null">#{heartRate},</if>
             <if test="bloodLipids != null">#{bloodLipids},</if>
+            <if test="bloodPressure != null">#{bloodPressure},</if>
             <if test="measureType != null and measureType != ''">#{measureType},</if>
             <if test="appendix != null">#{appendix},</if>
             <if test="userId != null">#{userId},</if>
@@ -127,6 +131,7 @@
             <if test="bloodGlucose != null">blood_glucose = #{bloodGlucose},</if>
             <if test="heartRate != null">heart_rate = #{heartRate},</if>
             <if test="bloodLipids != null">blood_lipids = #{bloodLipids},</if>
+            <if test="bloodPressure != null">blood_pressure = #{bloodPressure},</if>
             <if test="measureType != null and measureType != ''">measure_type = #{measureType},</if>
             <if test="appendix != null">appendix = #{appendix},</if>
             <if test="userId != null">user_id = #{userId},</if>

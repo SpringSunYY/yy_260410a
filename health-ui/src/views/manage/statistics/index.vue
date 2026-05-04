@@ -173,7 +173,7 @@ function handleQuery() {
 
 /** 重置按钮操作 */
 function resetQuery() {
-  daterangeMeasureTime.value = [];
+  daterangeMeasureTime.value = getLast14DaysRange();
   proxy.resetForm("queryRef");
   statisticsQuery.value = {
     pageNum: 1,
@@ -208,7 +208,22 @@ const remoteGetResidentList = (query) => {
   getResidentList();
 };
 
+/** 获取近14天的日期范围 */
+function getLast14DaysRange() {
+  const today = new Date();
+  const startDate = new Date(today);
+  startDate.setDate(today.getDate() - 13);
+  const formatDate = (date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+  return [formatDate(startDate), formatDate(today)];
+}
+
 onMounted(() => {
+  daterangeMeasureTime.value = getLast14DaysRange();
   getResidentList();
   getList();
 });
