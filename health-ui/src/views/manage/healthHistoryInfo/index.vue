@@ -48,14 +48,6 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="所属用户" prop="userId">
-        <el-input
-            v-model="queryParams.userId"
-            placeholder="请输入所属用户"
-            clearable
-            @keyup.enter="handleQuery"
-        />
-      </el-form-item>
       <el-form-item label="创建人" prop="createBy">
         <el-input
             v-model="queryParams.createBy"
