@@ -1,32 +1,32 @@
 package com.lz.manage.service.impl;
 
-import java.util.*;
-import java.util.List;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.stream.Collectors;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.lz.common.core.domain.entity.SysUser;
+import com.lz.common.exception.ServiceException;
+import com.lz.common.utils.DateUtils;
+import com.lz.common.utils.SecurityUtils;
+import com.lz.common.utils.StringUtils;
+import com.lz.manage.enums.HealthReadStatusEnum;
+import com.lz.manage.mapper.RemindInfoMapper;
+import com.lz.manage.model.domain.RemindConfigInfo;
+import com.lz.manage.model.domain.RemindInfo;
+import com.lz.manage.model.domain.ResidentInfo;
+import com.lz.manage.model.dto.remindInfo.RemindInfoQuery;
+import com.lz.manage.model.vo.remindInfo.RemindInfoVo;
+import com.lz.manage.service.IRemindConfigInfoService;
+import com.lz.manage.service.IRemindInfoService;
+import com.lz.manage.service.IResidentInfoService;
+import com.lz.system.service.ISysUserService;
+import jakarta.annotation.Resource;
+import org.springframework.stereotype.Service;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
-import com.lz.common.utils.StringUtils;
-import com.lz.common.utils.SecurityUtils;
-import com.lz.common.exception.ServiceException;
-import com.lz.manage.enums.HealthReadStatusEnum;
-import java.util.Date;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.lz.common.utils.DateUtils;
-import jakarta.annotation.Resource;
-import org.springframework.stereotype.Service;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.lz.manage.mapper.RemindInfoMapper;
-import com.lz.manage.model.domain.RemindInfo;
-import com.lz.manage.service.IRemindInfoService;
-import com.lz.manage.model.dto.remindInfo.RemindInfoQuery;
-import com.lz.manage.model.vo.remindInfo.RemindInfoVo;
-import com.lz.manage.service.IRemindConfigInfoService;
-import com.lz.manage.model.domain.RemindConfigInfo;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 提醒记录Service业务层处理
@@ -35,8 +35,7 @@ import com.lz.manage.model.domain.RemindConfigInfo;
  * @date 2026-05-04
  */
 @Service
-public class RemindInfoServiceImpl extends ServiceImpl<RemindInfoMapper, RemindInfo> implements IRemindInfoService
-{
+public class RemindInfoServiceImpl extends ServiceImpl<RemindInfoMapper, RemindInfo> implements IRemindInfoService {
 
     @Resource
     private RemindInfoMapper remindInfoMapper;
@@ -44,7 +43,14 @@ public class RemindInfoServiceImpl extends ServiceImpl<RemindInfoMapper, RemindI
     @Resource
     private IRemindConfigInfoService remindConfigInfoService;
 
+    @Resource
+    private ISysUserService sysUserService;
+
+    @Resource
+    private IResidentInfoService residentInfoService;
+
     //region mybatis代码
+
     /**
      * 查询提醒记录
      *
@@ -52,8 +58,7 @@ public class RemindInfoServiceImpl extends ServiceImpl<RemindInfoMapper, RemindI
      * @return 提醒记录
      */
     @Override
-    public RemindInfo selectRemindInfoById(Long id)
-    {
+    public RemindInfo selectRemindInfoById(Long id) {
         return remindInfoMapper.selectRemindInfoById(id);
     }
 
@@ -64,9 +69,19 @@ public class RemindInfoServiceImpl extends ServiceImpl<RemindInfoMapper, RemindI
      * @return 提醒记录
      */
     @Override
-    public List<RemindInfo> selectRemindInfoList(RemindInfo remindInfo)
-    {
-        return remindInfoMapper.selectRemindInfoList(remindInfo);
+    public List<RemindInfo> selectRemindInfoList(RemindInfo remindInfo) {
+        List<RemindInfo> remindInfos = remindInfoMapper.selectRemindInfoList(remindInfo);
+        for (RemindInfo info : remindInfos) {
+            SysUser sysUser = sysUserService.selectUserById(info.getUserId());
+            if (StringUtils.isNotNull(sysUser)) {
+                info.setUserName(sysUser.getUserName());
+            }
+            ResidentInfo residentInfo = residentInfoService.selectResidentInfoById(info.getResidentId());
+            if (StringUtils.isNotNull(residentInfo)) {
+                info.setResidentName(residentInfo.getResidentName());
+            }
+        }
+        return remindInfos;
     }
 
     /**
@@ -76,8 +91,8 @@ public class RemindInfoServiceImpl extends ServiceImpl<RemindInfoMapper, RemindI
      * @return 结果
      */
     @Override
-    public int insertRemindInfo(RemindInfo remindInfo)
-    {
+    public int insertRemindInfo(RemindInfo remindInfo) {
+        remindInfo.setCreateBy(SecurityUtils.getUsername());
         remindInfo.setCreateTime(DateUtils.getNowDate());
         return remindInfoMapper.insertRemindInfo(remindInfo);
     }
@@ -89,8 +104,17 @@ public class RemindInfoServiceImpl extends ServiceImpl<RemindInfoMapper, RemindI
      * @return 结果
      */
     @Override
-    public int updateRemindInfo(RemindInfo remindInfo)
-    {
+    public int updateRemindInfo(RemindInfo remindInfo) {
+        //先查询数据库
+        RemindInfo remindInfoOld = remindInfoMapper.selectRemindInfoById(remindInfo.getId());
+        if (StringUtils.isNull(remindInfoOld)) {
+            throw new ServiceException("提醒记录不存在");
+        }
+        //如果状态不一样且是已读
+        if (!remindInfoOld.getReadStatus().equals(remindInfo.getReadStatus()) && remindInfo.getReadStatus().equals(HealthReadStatusEnum.HEALTH_READ_STATUS_1.getValue())) {
+            remindInfo.setReadTime(DateUtils.getNowDate());
+        }
+        remindInfo.setUpdateBy(SecurityUtils.getUsername());
         remindInfo.setUpdateTime(DateUtils.getNowDate());
         return remindInfoMapper.updateRemindInfo(remindInfo);
     }
@@ -102,8 +126,7 @@ public class RemindInfoServiceImpl extends ServiceImpl<RemindInfoMapper, RemindI
      * @return 结果
      */
     @Override
-    public int deleteRemindInfoByIds(Long[] ids)
-    {
+    public int deleteRemindInfoByIds(Long[] ids) {
         return remindInfoMapper.deleteRemindInfoByIds(ids);
     }
 
@@ -114,13 +137,13 @@ public class RemindInfoServiceImpl extends ServiceImpl<RemindInfoMapper, RemindI
      * @return 结果
      */
     @Override
-    public int deleteRemindInfoById(Long id)
-    {
+    public int deleteRemindInfoById(Long id) {
         return remindInfoMapper.deleteRemindInfoById(id);
     }
+
     //endregion
     @Override
-    public QueryWrapper<RemindInfo> getQueryWrapper(RemindInfoQuery remindInfoQuery){
+    public QueryWrapper<RemindInfo> getQueryWrapper(RemindInfoQuery remindInfoQuery) {
         QueryWrapper<RemindInfo> queryWrapper = new QueryWrapper<>();
         //如果不使用params可以删除
         Map<String, Object> params = remindInfoQuery.getParams();
@@ -128,34 +151,34 @@ public class RemindInfoServiceImpl extends ServiceImpl<RemindInfoMapper, RemindI
             params = new HashMap<>();
         }
         Long id = remindInfoQuery.getId();
-        queryWrapper.eq( StringUtils.isNotNull(id),"id",id);
+        queryWrapper.eq(StringUtils.isNotNull(id), "id", id);
 
         Long reminderId = remindInfoQuery.getReminderId();
-        queryWrapper.eq( StringUtils.isNotNull(reminderId),"reminder_id",reminderId);
+        queryWrapper.eq(StringUtils.isNotNull(reminderId), "reminder_id", reminderId);
 
         Long residentId = remindInfoQuery.getResidentId();
-        queryWrapper.eq( StringUtils.isNotNull(residentId),"resident_id",residentId);
+        queryWrapper.eq(StringUtils.isNotNull(residentId), "resident_id", residentId);
 
         String reminderType = remindInfoQuery.getReminderType();
-        queryWrapper.eq(StringUtils.isNotEmpty(reminderType) ,"reminder_type",reminderType);
+        queryWrapper.eq(StringUtils.isNotEmpty(reminderType), "reminder_type", reminderType);
 
         String reminderTitle = remindInfoQuery.getReminderTitle();
-        queryWrapper.eq(StringUtils.isNotEmpty(reminderTitle) ,"reminder_title",reminderTitle);
+        queryWrapper.eq(StringUtils.isNotEmpty(reminderTitle), "reminder_title", reminderTitle);
 
         String readStatus = remindInfoQuery.getReadStatus();
-        queryWrapper.eq(StringUtils.isNotEmpty(readStatus) ,"read_status",readStatus);
+        queryWrapper.eq(StringUtils.isNotEmpty(readStatus), "read_status", readStatus);
 
         Date readTime = remindInfoQuery.getReadTime();
-        queryWrapper.between(StringUtils.isNotNull(params.get("beginReadTime"))&&StringUtils.isNotNull(params.get("endReadTime")),"read_time",params.get("beginReadTime"),params.get("endReadTime"));
+        queryWrapper.between(StringUtils.isNotNull(params.get("beginReadTime")) && StringUtils.isNotNull(params.get("endReadTime")), "read_time", params.get("beginReadTime"), params.get("endReadTime"));
 
         Long userId = remindInfoQuery.getUserId();
-        queryWrapper.eq( StringUtils.isNotNull(userId),"user_id",userId);
+        queryWrapper.eq(StringUtils.isNotNull(userId), "user_id", userId);
 
         String createBy = remindInfoQuery.getCreateBy();
-        queryWrapper.like(StringUtils.isNotEmpty(createBy) ,"create_by",createBy);
+        queryWrapper.like(StringUtils.isNotEmpty(createBy), "create_by", createBy);
 
         Date createTime = remindInfoQuery.getCreateTime();
-        queryWrapper.between(StringUtils.isNotNull(params.get("beginCreateTime"))&&StringUtils.isNotNull(params.get("endCreateTime")),"create_time",params.get("beginCreateTime"),params.get("endCreateTime"));
+        queryWrapper.between(StringUtils.isNotNull(params.get("beginCreateTime")) && StringUtils.isNotNull(params.get("endCreateTime")), "create_time", params.get("beginCreateTime"), params.get("endCreateTime"));
 
         return queryWrapper;
     }
