@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lz.manage.mapper.RemindConfigInfoMapper">
+    
+    <resultMap type="RemindConfigInfo" id="RemindConfigInfoResult">
+        <result property="id"    column="id"    />
+        <result property="residentId"    column="resident_id"    />
+        <result property="remindType"    column="remind_type"    />
+        <result property="remindTitle"    column="remind_title"    />
+        <result property="remindContent"    column="remind_content"    />
+        <result property="remindTime"    column="remind_time"    />
+        <result property="startTime"    column="start_time"    />
+        <result property="endTime"    column="end_time"    />
+        <result property="remindFrequency"    column="remind_frequency"    />
+        <result property="remindInterval"    column="remind_interval"    />
+        <result property="lastRemindTime"    column="last_remind_time"    />
+        <result property="nextRemindTime"    column="next_remind_time"    />
+        <result property="userId"    column="user_id"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectRemindConfigInfoVo">
+        select id, resident_id, remind_type, remind_title, remind_content, remind_time, start_time, end_time, remind_frequency, remind_interval, last_remind_time, next_remind_time, user_id, create_by, create_time, update_by, update_time, remark from tb_remind_config_info
+    </sql>
+
+    <select id="selectRemindConfigInfoList" parameterType="RemindConfigInfo" resultMap="RemindConfigInfoResult">
+        <include refid="selectRemindConfigInfoVo"/>
+        <where>  
+            <if test="id != null "> and id = #{id}</if>
+            <if test="residentId != null "> and resident_id = #{residentId}</if>
+            <if test="remindType != null  and remindType != ''"> and remind_type = #{remindType}</if>
+            <if test="remindTitle != null  and remindTitle != ''"> and remind_title like concat('%', #{remindTitle}, '%')</if>
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="createBy != null  and createBy != ''"> and create_by like concat('%', #{createBy}, '%')</if>
+            <if test="params.beginCreateTime != null and params.beginCreateTime != '' and params.endCreateTime != null and params.endCreateTime != ''"> and DATE_FORMAT(create_time, '%Y-%m-%d') between #{params.beginCreateTime} and #{params.endCreateTime}</if>
+        </where>
+    </select>
+    
+    <select id="selectRemindConfigInfoById" parameterType="Long" resultMap="RemindConfigInfoResult">
+        <include refid="selectRemindConfigInfoVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertRemindConfigInfo" parameterType="RemindConfigInfo" useGeneratedKeys="true" keyProperty="id">
+        insert into tb_remind_config_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="residentId != null">resident_id,</if>
+            <if test="remindType != null and remindType != ''">remind_type,</if>
+            <if test="remindTitle != null and remindTitle != ''">remind_title,</if>
+            <if test="remindContent != null and remindContent != ''">remind_content,</if>
+            <if test="remindTime != null">remind_time,</if>
+            <if test="startTime != null">start_time,</if>
+            <if test="endTime != null">end_time,</if>
+            <if test="remindFrequency != null">remind_frequency,</if>
+            <if test="remindInterval != null">remind_interval,</if>
+            <if test="lastRemindTime != null">last_remind_time,</if>
+            <if test="nextRemindTime != null">next_remind_time,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="createBy != null and createBy != ''">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="residentId != null">#{residentId},</if>
+            <if test="remindType != null and remindType != ''">#{remindType},</if>
+            <if test="remindTitle != null and remindTitle != ''">#{remindTitle},</if>
+            <if test="remindContent != null and remindContent != ''">#{remindContent},</if>
+            <if test="remindTime != null">#{remindTime},</if>
+            <if test="startTime != null">#{startTime},</if>
+            <if test="endTime != null">#{endTime},</if>
+            <if test="remindFrequency != null">#{remindFrequency},</if>
+            <if test="remindInterval != null">#{remindInterval},</if>
+            <if test="lastRemindTime != null">#{lastRemindTime},</if>
+            <if test="nextRemindTime != null">#{nextRemindTime},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="createBy != null and createBy != ''">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateRemindConfigInfo" parameterType="RemindConfigInfo">
+        update tb_remind_config_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="residentId != null">resident_id = #{residentId},</if>
+            <if test="remindType != null and remindType != ''">remind_type = #{remindType},</if>
+            <if test="remindTitle != null and remindTitle != ''">remind_title = #{remindTitle},</if>
+            <if test="remindContent != null and remindContent != ''">remind_content = #{remindContent},</if>
+            <if test="remindTime != null">remind_time = #{remindTime},</if>
+            <if test="startTime != null">start_time = #{startTime},</if>
+            <if test="endTime != null">end_time = #{endTime},</if>
+            <if test="remindFrequency != null">remind_frequency = #{remindFrequency},</if>
+            <if test="remindInterval != null">remind_interval = #{remindInterval},</if>
+            <if test="lastRemindTime != null">last_remind_time = #{lastRemindTime},</if>
+            <if test="nextRemindTime != null">next_remind_time = #{nextRemindTime},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="createBy != null and createBy != ''">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteRemindConfigInfoById" parameterType="Long">
+        delete from tb_remind_config_info where id = #{id}
+    </delete>
+
+    <delete id="deleteRemindConfigInfoByIds" parameterType="String">
+        delete from tb_remind_config_info where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
