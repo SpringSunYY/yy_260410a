@@ -149,35 +149,37 @@
                        :show-overflow-tooltip="true"/>
       <el-table-column label="心率次/分" align="center" prop="heartRate" v-if="columns[8].visible"
                        :show-overflow-tooltip="true"/>
-      <el-table-column label="测量类型" align="center" prop="measureType" v-if="columns[9].visible">
+      <el-table-column label="血脂" align="center" prop="bloodLipids" v-if="columns[9].visible"
+                       :show-overflow-tooltip="true"/>
+      <el-table-column label="测量类型" align="center" prop="measureType" v-if="columns[10].visible">
         <template #default="scope">
           <dict-tag :options="health_measure_type" :value="scope.row.measureType"/>
         </template>
       </el-table-column>
-      <el-table-column label="附件" align="center" prop="appendix" width="100" v-if="columns[10].visible">
+      <el-table-column label="附件" align="center" prop="appendix" width="100" v-if="columns[11].visible">
         <template #default="scope">
           <file-view :file-url="scope.row.appendix"/>
         </template>
       </el-table-column>
-      <el-table-column label="所属用户" align="center" prop="userName" v-if="columns[11].visible"
+      <el-table-column label="所属用户" align="center" prop="userName" v-if="columns[12].visible"
                        :show-overflow-tooltip="true"/>
-      <el-table-column label="创建人" align="center" prop="createBy" v-if="columns[12].visible"
+      <el-table-column label="创建人" align="center" prop="createBy" v-if="columns[13].visible"
                        :show-overflow-tooltip="true"/>
-      <el-table-column label="创建时间" align="center" prop="createTime" width="180" v-if="columns[13].visible"
+      <el-table-column label="创建时间" align="center" prop="createTime" width="180" v-if="columns[14].visible"
                        :show-overflow-tooltip="true">
         <template #default="scope">
           <span>{{ parseTime(scope.row.createTime, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="更新人" align="center" prop="updateBy" v-if="columns[14].visible"
+      <el-table-column label="更新人" align="center" prop="updateBy" v-if="columns[15].visible"
                        :show-overflow-tooltip="true"/>
-      <el-table-column label="更新时间" align="center" prop="updateTime" width="180" v-if="columns[15].visible"
+      <el-table-column label="更新时间" align="center" prop="updateTime" width="180" v-if="columns[16].visible"
                        :show-overflow-tooltip="true">
         <template #default="scope">
           <span>{{ parseTime(scope.row.updateTime, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="备注" align="center" prop="remark" v-if="columns[16].visible"
+      <el-table-column label="备注" align="center" prop="remark" v-if="columns[17].visible"
                        :show-overflow-tooltip="true"/>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template #default="scope">
@@ -247,6 +249,9 @@
         </el-form-item>
         <el-form-item label="心率次/分" prop="heartRate">
           <el-input-number style="width: 100%;" :min="0" v-model="form.heartRate" placeholder="请输入心率次/分"/>
+        </el-form-item>
+        <el-form-item label="血脂" prop="bloodLipids">
+          <el-input-number style="width: 100%;" :min="0" v-model="form.bloodLipids" placeholder="请输入血脂"/>
         </el-form-item>
         <el-form-item label="测量类型" prop="measureType">
           <el-select v-model="form.measureType" placeholder="请选择测量类型">
@@ -346,14 +351,15 @@ const data = reactive({
     {key: 6, label: '舒张压mmHg', visible: true},
     {key: 7, label: '血糖mmol/L', visible: true},
     {key: 8, label: '心率次/分', visible: true},
-    {key: 9, label: '测量类型', visible: true},
-    {key: 10, label: '附件', visible: true},
-    {key: 11, label: '所属用户', visible: true},
-    {key: 12, label: '创建人', visible: true},
-    {key: 13, label: '创建时间', visible: true},
-    {key: 14, label: '更新人', visible: false},
-    {key: 15, label: '更新时间', visible: false},
-    {key: 16, label: '备注', visible: true},
+    {key: 9, label: '血脂', visible: true},
+    {key: 11, label: '测量类型', visible: true},
+    {key: 12, label: '附件', visible: true},
+    {key: 13, label: '所属用户', visible: true},
+    {key: 14, label: '创建人', visible: true},
+    {key: 15, label: '创建时间', visible: true},
+    {key: 16, label: '更新人', visible: false},
+    {key: 17, label: '更新时间', visible: false},
+    {key: 18, label: '备注', visible: true},
   ],
 });
 
@@ -396,6 +402,7 @@ function reset() {
     dbp: null,
     bloodGlucose: null,
     heartRate: null,
+    bloodLipids: null,
     measureType: null,
     appendix: null,
     userId: null,
@@ -451,21 +458,107 @@ function handleUpdate(row) {
 function submitForm() {
   proxy.$refs["healthHistoryInfoRef"].validate(valid => {
     if (valid) {
-      if (form.value.id != null) {
-        updateHealthHistoryInfo(form.value).then(response => {
-          proxy.$modal.msgSuccess("修改成功");
-          open.value = false;
-          getList();
-        });
+      // 检查健康指标是否有异常
+      const warnings = checkHealthIndicators();
+      if (warnings.length > 0) {
+        // 先显示警告信息，用户确认后提交
+        proxy.$modal.confirm(warnings.join('<br>') + '<br><br>是否确认提交？', '系统提示', {
+          dangerouslyUseHTMLString: true,
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          customClass: 'health-warn-modal'
+        }).then(() => {
+          submitData();
+        }).catch(() => {});
       } else {
-        addHealthHistoryInfo(form.value).then(response => {
-          proxy.$modal.msgSuccess("新增成功");
-          open.value = false;
-          getList();
-        });
+        submitData();
       }
     }
   });
+}
+
+/** 提交数据 */
+function submitData() {
+  if (form.value.id != null) {
+    updateHealthHistoryInfo(form.value).then(response => {
+      proxy.$modal.msgSuccess("修改成功");
+      open.value = false;
+      getList();
+    });
+  } else {
+    addHealthHistoryInfo(form.value).then(response => {
+      proxy.$modal.msgSuccess("新增成功");
+      open.value = false;
+      getList();
+    });
+  }
+}
+
+/** 检查健康指标是否异常 */
+function checkHealthIndicators() {
+  const warnings = [];
+  const { height, weight, sbp, dbp, bloodGlucose, heartRate, bloodLipids } = form.value;
+
+  // 身高异常（过高或过低）：正常成人身高范围 100cm - 220cm
+  if (height !== null && height !== undefined) {
+    if (height < 100 || height > 220) {
+      warnings.push(`身高数值异常，当前值：${height}cm（正常范围：100-220cm）`);
+    }
+  }
+
+  // 体重异常：正常成人体重范围 20kg - 200kg
+  if (weight !== null && weight !== undefined) {
+    if (weight < 20 || weight > 200) {
+      warnings.push(`体重数值异常，当前值：${weight}kg（正常范围：20-200kg）`);
+    }
+  }
+
+  // 收缩压异常：正常范围 90-140 mmHg
+  if (sbp !== null && sbp !== undefined) {
+    if (sbp < 90) {
+      warnings.push(`收缩压过低，当前值：${sbp}mmHg（正常范围：90-140mmHg）`);
+    } else if (sbp > 140) {
+      warnings.push(`收缩压过高，当前值：${sbp}mmHg（正常范围：90-140mmHg）`);
+    }
+  }
+
+  // 舒张压异常：正常范围 60-90 mmHg
+  if (dbp !== null && dbp !== undefined) {
+    if (dbp < 60) {
+      warnings.push(`舒张压过低，当前值：${dbp}mmHg（正常范围：60-90mmHg）`);
+    } else if (dbp > 90) {
+      warnings.push(`舒张压过高，当前值：${dbp}mmHg（正常范围：60-90mmHg）`);
+    }
+  }
+
+  // 血糖异常：正常范围 3.9-6.1 mmol/L
+  if (bloodGlucose !== null && bloodGlucose !== undefined) {
+    if (bloodGlucose < 3.9) {
+      warnings.push(`血糖过低，当前值：${bloodGlucose}mmol/L（正常范围：3.9-6.1mmol/L）`);
+    } else if (bloodGlucose > 6.1) {
+      warnings.push(`血糖过高，当前值：${bloodGlucose}mmol/L（正常范围：3.9-6.1mmol/L）`);
+    }
+  }
+
+  // 心率异常：正常范围 60-100 次/分
+  if (heartRate !== null && heartRate !== undefined) {
+    if (heartRate < 60) {
+      warnings.push(`心率过低，当前值：${heartRate}次/分（正常范围：60-100次/分）`);
+    } else if (heartRate > 100) {
+      warnings.push(`心率过高，当前值：${heartRate}次/分（正常范围：60-100次/分）`);
+    }
+  }
+
+  // 血脂异常：总胆固醇正常 < 5.2 mmol/L
+  if (bloodLipids !== null && bloodLipids !== undefined) {
+    if (bloodLipids < 2.0) {
+      warnings.push(`血脂过低，当前值：${bloodLipids}mmol/L（正常范围：2.0-5.2mmol/L）`);
+    } else if (bloodLipids > 5.2) {
+      warnings.push(`血脂过高，当前值：${bloodLipids}mmol/L（正常范围：2.0-5.2mmol/L）`);
+    }
+  }
+
+  return warnings;
 }
 
 /** 删除按钮操作 */
@@ -510,3 +603,10 @@ getResidentList()
 
 getList();
 </script>
+
+<style>
+.health-warn-modal {
+  width: 500px !important;
+  max-width: 90vw;
+}
+</style>

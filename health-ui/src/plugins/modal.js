@@ -52,11 +52,12 @@ export default {
     ElNotification.warning(content)
   },
   // 确认窗体
-  confirm(content) {
-    return ElMessageBox.confirm(content, "系统提示", {
+  confirm(content, title = "系统提示", options = {}) {
+    return ElMessageBox.confirm(content, title, {
       confirmButtonText: '确定',
       cancelButtonText: '取消',
       type: "warning",
+      ...options,
     })
   },
   // 提交内容

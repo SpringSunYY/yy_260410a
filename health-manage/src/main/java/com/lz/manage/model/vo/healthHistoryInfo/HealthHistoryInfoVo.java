@@ -67,6 +67,11 @@ public class HealthHistoryInfoVo implements Serializable {
     private Long heartRate;
 
     /**
+     * 血脂
+     */
+    private Long bloodLipids;
+
+    /**
      * 测量类型
      */
     private String measureType;

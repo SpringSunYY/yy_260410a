@@ -1,49 +1,73 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper
-PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.lz.manage.mapper.HealthHistoryInfoMapper">
-    
+
     <resultMap type="HealthHistoryInfo" id="HealthHistoryInfoResult">
-        <result property="id"    column="id"    />
-        <result property="residentId"    column="resident_id"    />
-        <result property="measureTime"    column="measure_time"    />
-        <result property="height"    column="height"    />
-        <result property="weight"    column="weight"    />
-        <result property="sbp"    column="sbp"    />
-        <result property="dbp"    column="dbp"    />
-        <result property="bloodGlucose"    column="blood_glucose"    />
-        <result property="heartRate"    column="heart_rate"    />
-        <result property="measureType"    column="measure_type"    />
-        <result property="appendix"    column="appendix"    />
-        <result property="userId"    column="user_id"    />
-        <result property="createBy"    column="create_by"    />
-        <result property="createTime"    column="create_time"    />
-        <result property="updateBy"    column="update_by"    />
-        <result property="updateTime"    column="update_time"    />
-        <result property="remark"    column="remark"    />
+        <result property="id" column="id"/>
+        <result property="residentId" column="resident_id"/>
+        <result property="measureTime" column="measure_time"/>
+        <result property="height" column="height"/>
+        <result property="weight" column="weight"/>
+        <result property="sbp" column="sbp"/>
+        <result property="dbp" column="dbp"/>
+        <result property="bloodGlucose" column="blood_glucose"/>
+        <result property="heartRate" column="heart_rate"/>
+        <result property="bloodLipids" column="blood_lipids"/>
+        <result property="measureType" column="measure_type"/>
+        <result property="appendix" column="appendix"/>
+        <result property="userId" column="user_id"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
     </resultMap>
 
     <sql id="selectHealthHistoryInfoVo">
-        select id, resident_id, measure_time, height, weight, sbp, dbp, blood_glucose, heart_rate, measure_type, appendix, user_id, create_by, create_time, update_by, update_time, remark from tb_health_history_info
+        select id,
+               resident_id,
+               measure_time,
+               height,
+               weight,
+               sbp,
+               dbp,
+               blood_glucose,
+               heart_rate,
+               blood_lipids,
+               measure_type,
+               appendix,
+               user_id,
+               create_by,
+               create_time,
+               update_by,
+               update_time,
+               remark
+        from tb_health_history_info
     </sql>
 
     <select id="selectHealthHistoryInfoList" parameterType="HealthHistoryInfo" resultMap="HealthHistoryInfoResult">
         <include refid="selectHealthHistoryInfoVo"/>
-        <where>  
-            <if test="id != null "> and id = #{id}</if>
-            <if test="residentId != null"> and resident_id = #{residentId}</if>
-            <if test="params.beginMeasureTime != null and params.beginMeasureTime != '' and params.endMeasureTime != null and params.endMeasureTime != ''"> and DATE_FORMAT(measure_time, '%Y-%m-%d') between #{params.beginMeasureTime} and #{params.endMeasureTime}</if>
-            <if test="measureType != null  and measureType != ''"> and measure_type = #{measureType}</if>
-            <if test="userId != null "> and user_id = #{userId}</if>
-            <if test="createBy != null  and createBy != ''"> and create_by like concat('%', #{createBy}, '%')</if>
-            <if test="params.beginCreateTime != null and params.beginCreateTime != '' and params.endCreateTime != null and params.endCreateTime != ''"> and DATE_FORMAT(create_time, '%Y-%m-%d') between #{params.beginCreateTime} and #{params.endCreateTime}</if>
+        <where>
+            <if test="id != null ">and id = #{id}</if>
+            <if test="residentId != null">and resident_id = #{residentId}</if>
+            <if test="params.beginMeasureTime != null and params.beginMeasureTime != '' and params.endMeasureTime != null and params.endMeasureTime != ''">
+                and DATE_FORMAT(measure_time, '%Y-%m-%d') between #{params.beginMeasureTime} and
+                #{params.endMeasureTime}
+            </if>
+            <if test="measureType != null  and measureType != ''">and measure_type = #{measureType}</if>
+            <if test="userId != null ">and user_id = #{userId}</if>
+            <if test="createBy != null  and createBy != ''">and create_by like concat('%', #{createBy}, '%')</if>
+            <if test="params.beginCreateTime != null and params.beginCreateTime != '' and params.endCreateTime != null and params.endCreateTime != ''">
+                and DATE_FORMAT(create_time, '%Y-%m-%d') between #{params.beginCreateTime} and #{params.endCreateTime}
+            </if>
             <!-- 数据范围过滤 -->
             ${params.dataScope}
         </where>
         order by create_time desc
     </select>
-    
+
     <select id="selectHealthHistoryInfoById" parameterType="Long" resultMap="HealthHistoryInfoResult">
         <include refid="selectHealthHistoryInfoVo"/>
         where id = #{id}
@@ -60,6 +84,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="dbp != null">dbp,</if>
             <if test="bloodGlucose != null">blood_glucose,</if>
             <if test="heartRate != null">heart_rate,</if>
+            <if test="bloodLipids != null">blood_lipids,</if>
             <if test="measureType != null and measureType != ''">measure_type,</if>
             <if test="appendix != null">appendix,</if>
             <if test="userId != null">user_id,</if>
@@ -68,7 +93,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="updateBy != null">update_by,</if>
             <if test="updateTime != null">update_time,</if>
             <if test="remark != null">remark,</if>
-         </trim>
+        </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="residentId != null">#{residentId},</if>
             <if test="measureTime != null">#{measureTime},</if>
@@ -78,6 +103,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="dbp != null">#{dbp},</if>
             <if test="bloodGlucose != null">#{bloodGlucose},</if>
             <if test="heartRate != null">#{heartRate},</if>
+            <if test="bloodLipids != null">#{bloodLipids},</if>
             <if test="measureType != null and measureType != ''">#{measureType},</if>
             <if test="appendix != null">#{appendix},</if>
             <if test="userId != null">#{userId},</if>
@@ -86,7 +112,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="updateBy != null">#{updateBy},</if>
             <if test="updateTime != null">#{updateTime},</if>
             <if test="remark != null">#{remark},</if>
-         </trim>
+        </trim>
     </insert>
 
     <update id="updateHealthHistoryInfo" parameterType="HealthHistoryInfo">
@@ -100,6 +126,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="dbp != null">dbp = #{dbp},</if>
             <if test="bloodGlucose != null">blood_glucose = #{bloodGlucose},</if>
             <if test="heartRate != null">heart_rate = #{heartRate},</if>
+            <if test="bloodLipids != null">blood_lipids = #{bloodLipids},</if>
             <if test="measureType != null and measureType != ''">measure_type = #{measureType},</if>
             <if test="appendix != null">appendix = #{appendix},</if>
             <if test="userId != null">user_id = #{userId},</if>
@@ -113,11 +140,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </update>
 
     <delete id="deleteHealthHistoryInfoById" parameterType="Long">
-        delete from tb_health_history_info where id = #{id}
+        delete
+        from tb_health_history_info
+        where id = #{id}
     </delete>
 
     <delete id="deleteHealthHistoryInfoByIds" parameterType="String">
-        delete from tb_health_history_info where id in 
+        delete from tb_health_history_info where id in
         <foreach item="id" collection="array" open="(" separator="," close=")">
             #{id}
         </foreach>
