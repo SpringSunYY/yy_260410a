@@ -5,7 +5,9 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.lz.common.annotation.DataScope;
 import com.lz.common.core.domain.entity.SysUser;
 import com.lz.common.exception.ServiceException;
+import com.lz.common.utils.CryptoUtils;
 import com.lz.common.utils.DateUtils;
+import com.lz.common.utils.DesensitizedUtil;
 import com.lz.common.utils.SecurityUtils;
 import com.lz.common.utils.StringUtils;
 import com.lz.manage.mapper.ResidentInfoMapper;
@@ -45,7 +47,96 @@ public class ResidentInfoServiceImpl extends ServiceImpl<ResidentInfoMapper, Res
      */
     @Override
     public ResidentInfo selectResidentInfoById(Long id) {
-        return residentInfoMapper.selectResidentInfoById(id);
+        ResidentInfo residentInfo = residentInfoMapper.selectResidentInfoById(id);
+        if (StringUtils.isNotNull(residentInfo)) {
+            decryptAndSetFields(residentInfo);
+        }
+        return residentInfo;
+    }
+
+    /**
+     * 解密并脱敏敏感字段（用于列表查询）
+     *
+     * @param info 居民信息
+     */
+    private void decryptAndMaskFields(ResidentInfo info) {
+        if (StringUtils.isNotNull(info)) {
+            String idCard = info.getIdCard();
+            if (StringUtils.isNotBlank(idCard)) {
+                info.setIdCard(DesensitizedUtil.idCard(CryptoUtils.decrypt(idCard)));
+            }
+            String contactPhone = info.getContactPhone();
+            if (StringUtils.isNotBlank(contactPhone)) {
+                info.setContactPhone(DesensitizedUtil.mobilePhone(CryptoUtils.decrypt(contactPhone)));
+            }
+            String address = info.getAddress();
+            if (StringUtils.isNotBlank(address)) {
+                info.setAddress(DesensitizedUtil.customDesensitize(CryptoUtils.decrypt(address)));
+            }
+            String emergencyContact = info.getEmergencyContact();
+            if (StringUtils.isNotBlank(emergencyContact)) {
+                info.setEmergencyContact(DesensitizedUtil.customDesensitize(CryptoUtils.decrypt(emergencyContact)));
+            }
+            String emergencyPhone = info.getEmergencyPhone();
+            if (StringUtils.isNotBlank(emergencyPhone)) {
+                info.setEmergencyPhone(DesensitizedUtil.customDesensitize(CryptoUtils.decrypt(emergencyPhone)));
+            }
+        }
+    }
+
+    /**
+     * 解密敏感字段（用于详情查询，不脱敏）
+     *
+     * @param info 居民信息
+     */
+    private void decryptAndSetFields(ResidentInfo info) {
+        if (StringUtils.isNotNull(info)) {
+            String idCard = info.getIdCard();
+            if (StringUtils.isNotBlank(idCard)) {
+                info.setIdCard(CryptoUtils.decrypt(idCard));
+            }
+            String contactPhone = info.getContactPhone();
+            if (StringUtils.isNotBlank(contactPhone)) {
+                info.setContactPhone(CryptoUtils.decrypt(contactPhone));
+            }
+            String address = info.getAddress();
+            if (StringUtils.isNotBlank(address)) {
+                info.setAddress(CryptoUtils.decrypt(address));
+            }
+            String emergencyContact = info.getEmergencyContact();
+            if (StringUtils.isNotBlank(emergencyContact)) {
+                info.setEmergencyContact(CryptoUtils.decrypt(emergencyContact));
+            }
+            String emergencyPhone = info.getEmergencyPhone();
+            if (StringUtils.isNotBlank(emergencyPhone)) {
+                info.setEmergencyPhone(CryptoUtils.decrypt(emergencyPhone));
+            }
+        }
+    }
+
+    /**
+     * 加密敏感字段
+     *
+     * @param info 居民信息
+     */
+    private void encryptSensitiveFields(ResidentInfo info) {
+        if (StringUtils.isNotNull(info)) {
+            if (StringUtils.isNotBlank(info.getIdCard())) {
+                info.setIdCard(CryptoUtils.encrypt(info.getIdCard()));
+            }
+            if (StringUtils.isNotBlank(info.getContactPhone())) {
+                info.setContactPhone(CryptoUtils.encrypt(info.getContactPhone()));
+            }
+            if (StringUtils.isNotBlank(info.getAddress())) {
+                info.setAddress(CryptoUtils.encrypt(info.getAddress()));
+            }
+            if (StringUtils.isNotBlank(info.getEmergencyContact())) {
+                info.setEmergencyContact(CryptoUtils.encrypt(info.getEmergencyContact()));
+            }
+            if (StringUtils.isNotBlank(info.getEmergencyPhone())) {
+                info.setEmergencyPhone(CryptoUtils.encrypt(info.getEmergencyPhone()));
+            }
+        }
     }
 
     /**
@@ -63,6 +154,7 @@ public class ResidentInfoServiceImpl extends ServiceImpl<ResidentInfoMapper, Res
             if (StringUtils.isNotNull(sysUser)) {
                 info.setUserName(sysUser.getUserName());
             }
+            decryptAndMaskFields(info);
         }
         return residentInfos;
     }
@@ -85,6 +177,7 @@ public class ResidentInfoServiceImpl extends ServiceImpl<ResidentInfoMapper, Res
         if (StringUtils.isNotNull(residentInfoByUserId)) {
             throw new ServiceException("此用户已存在档案");
         }
+        encryptSensitiveFields(residentInfo);
         residentInfo.setCreateBy(SecurityUtils.getUsername());
         residentInfo.setCreateTime(DateUtils.getNowDate());
         return residentInfoMapper.insertResidentInfo(residentInfo);
@@ -106,6 +199,7 @@ public class ResidentInfoServiceImpl extends ServiceImpl<ResidentInfoMapper, Res
         if (!oldResidentInfo.getUserId().equals(residentInfo.getUserId())) {
             throw new ServiceException("用户不一致");
         }
+        encryptSensitiveFields(residentInfo);
         residentInfo.setUpdateBy(SecurityUtils.getUsername());
         residentInfo.setUpdateTime(DateUtils.getNowDate());
         return residentInfoMapper.updateResidentInfo(residentInfo);

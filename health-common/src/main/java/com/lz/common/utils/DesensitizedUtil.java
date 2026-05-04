@@ -46,4 +46,61 @@ public class DesensitizedUtil
         }
         return carLicense;
     }
+
+    /**
+     * 身份证号脱敏
+     * 显示前3位和后4位，中间用*代替
+     *
+     * @param idCard 身份证号
+     * @return 脱敏后的身份证号
+     */
+    public static String idCard(String idCard)
+    {
+        if (StringUtils.isBlank(idCard))
+        {
+            return StringUtils.EMPTY;
+        }
+        return StringUtils.hide(idCard, 3, idCard.length() - 4);
+    }
+
+    /**
+     * 手机号脱敏
+     * 显示前3位和后4位，中间用*代替
+     *
+     * @param phone 手机号
+     * @return 脱敏后的手机号
+     */
+    public static String mobilePhone(String phone)
+    {
+        if (StringUtils.isBlank(phone))
+        {
+            return StringUtils.EMPTY;
+        }
+        return StringUtils.hide(phone, 3, 7);
+    }
+
+    /**
+     * 自定义脱敏规则
+     * 如果长度小于等于4，直接全部脱敏
+     * 如果长度大于4，脱敏二分之一（向下取整）
+     *
+     * @param content 原始内容
+     * @return 脱敏后的内容
+     */
+    public static String customDesensitize(String content)
+    {
+        if (StringUtils.isBlank(content))
+        {
+            return StringUtils.EMPTY;
+        }
+        int length = content.length();
+        if (length <= 4)
+        {
+            return StringUtils.repeat('*', length);
+        }
+        int hideCount = length / 2;
+        int start = length / 4;
+        int end = start + hideCount;
+        return StringUtils.hide(content, start, end);
+    }
 }
