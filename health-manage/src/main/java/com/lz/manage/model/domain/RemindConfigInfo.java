@@ -1,10 +1,11 @@
 package com.lz.manage.model.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import java.io.Serializable;
+import java.time.LocalTime;
 import java.util.Map;
 import java.util.Date;
-import java.util.Date;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -31,8 +32,11 @@ public class RemindConfigInfo implements Serializable
     private Long id;
 
     /** 居民 */
-    @Excel(name = "居民")
+    @Excel(name = "居民",type = Excel.Type.IMPORT)
     private Long residentId;
+    @TableField(exist = false)
+    @Excel(name = "居民",type = Excel.Type.EXPORT)
+    private String residentName;
 
     /** 提醒类型 */
     @Excel(name = "提醒类型", dictType = "health_remind_type")
@@ -46,10 +50,9 @@ public class RemindConfigInfo implements Serializable
     @Excel(name = "提醒内容")
     private String remindContent;
 
-    /** 提醒时间 */
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    @Excel(name = "提醒时间", width = 30, dateFormat = "yyyy-MM-dd")
-    private Date remindTime;
+    /** 提醒时间（格式：HH:mm:ss，只存时间部分） */
+    @JsonFormat(pattern = "HH:mm")
+    private LocalTime remindTime;
 
     /** 开始时间 */
     @JsonFormat(pattern = "yyyy-MM-dd")
@@ -70,26 +73,29 @@ public class RemindConfigInfo implements Serializable
     private Long remindInterval;
 
     /** 上次提醒时间 */
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    @Excel(name = "上次提醒时间", width = 30, dateFormat = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @Excel(name = "上次提醒时间", width = 30, dateFormat = "yyyy-MM-dd HH:mm:ss")
     private Date lastRemindTime;
 
     /** 下次提醒时间 */
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    @Excel(name = "下次提醒时间", width = 30, dateFormat = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @Excel(name = "下次提醒时间", width = 30, dateFormat = "yyyy-MM-dd HH:mm:ss")
     private Date nextRemindTime;
 
     /** 所属用户 */
-    @Excel(name = "所属用户")
+    @Excel(name = "所属用户",type = Excel.Type.IMPORT)
     private Long userId;
+    @TableField(exist = false)
+    @Excel(name = "所属用户",type = Excel.Type.EXPORT)
+    private String userName;
 
     /** 创建人 */
     @Excel(name = "创建人")
     private String createBy;
 
     /** 创建时间 */
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    @Excel(name = "创建时间", width = 30, dateFormat = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @Excel(name = "创建时间", width = 30, dateFormat = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
 
     /** 更新人 */
@@ -97,8 +103,8 @@ public class RemindConfigInfo implements Serializable
     private String updateBy;
 
     /** 更新时间 */
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    @Excel(name = "更新时间", width = 30, dateFormat = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @Excel(name = "更新时间", width = 30, dateFormat = "yyyy-MM-dd HH:mm:ss")
     private Date updateTime;
 
     /** 备注 */

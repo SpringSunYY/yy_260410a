@@ -10,7 +10,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="remindType"    column="remind_type"    />
         <result property="remindTitle"    column="remind_title"    />
         <result property="remindContent"    column="remind_content"    />
-        <result property="remindTime"    column="remind_time"    />
+        <result property="remindTime"    column="remind_time"    typeHandler="org.apache.ibatis.type.LocalTimeTypeHandler" />
         <result property="startTime"    column="start_time"    />
         <result property="endTime"    column="end_time"    />
         <result property="remindFrequency"    column="remind_frequency"    />
@@ -39,6 +39,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="userId != null "> and user_id = #{userId}</if>
             <if test="createBy != null  and createBy != ''"> and create_by like concat('%', #{createBy}, '%')</if>
             <if test="params.beginCreateTime != null and params.beginCreateTime != '' and params.endCreateTime != null and params.endCreateTime != ''"> and DATE_FORMAT(create_time, '%Y-%m-%d') between #{params.beginCreateTime} and #{params.endCreateTime}</if>
+            <!-- 数据范围过滤 -->
+            ${params.dataScope}
         </where>
     </select>
     
@@ -73,7 +75,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="remindType != null and remindType != ''">#{remindType},</if>
             <if test="remindTitle != null and remindTitle != ''">#{remindTitle},</if>
             <if test="remindContent != null and remindContent != ''">#{remindContent},</if>
-            <if test="remindTime != null">#{remindTime},</if>
+            <if test="remindTime != null">#{remindTime, typeHandler=org.apache.ibatis.type.LocalTimeTypeHandler},</if>
             <if test="startTime != null">#{startTime},</if>
             <if test="endTime != null">#{endTime},</if>
             <if test="remindFrequency != null">#{remindFrequency},</if>
@@ -96,7 +98,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="remindType != null and remindType != ''">remind_type = #{remindType},</if>
             <if test="remindTitle != null and remindTitle != ''">remind_title = #{remindTitle},</if>
             <if test="remindContent != null and remindContent != ''">remind_content = #{remindContent},</if>
-            <if test="remindTime != null">remind_time = #{remindTime},</if>
+            <if test="remindTime != null">remind_time = #{remindTime, typeHandler=org.apache.ibatis.type.LocalTimeTypeHandler},</if>
             <if test="startTime != null">start_time = #{startTime},</if>
             <if test="endTime != null">end_time = #{endTime},</if>
             <if test="remindFrequency != null">remind_frequency = #{remindFrequency},</if>

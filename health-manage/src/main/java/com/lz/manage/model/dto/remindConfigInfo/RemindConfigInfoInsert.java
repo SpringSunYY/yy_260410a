@@ -1,6 +1,7 @@
 package com.lz.manage.model.dto.remindConfigInfo;
 
 import java.io.Serializable;
+import java.time.LocalTime;
 import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
@@ -29,9 +30,9 @@ public class RemindConfigInfoInsert implements Serializable
     /** 提醒内容 */
     private String remindContent;
 
-    /** 提醒时间 */
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    private Date remindTime;
+    /** 提醒时间（格式：HH:mm:ss，只存时间部分） */
+    @JsonFormat(pattern = "HH:mm")
+    private LocalTime remindTime;
 
     /** 开始时间 */
     @JsonFormat(pattern = "yyyy-MM-dd")
@@ -46,17 +47,6 @@ public class RemindConfigInfoInsert implements Serializable
 
     /** 提醒间隔分钟 */
     private Long remindInterval;
-
-    /** 上次提醒时间 */
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    private Date lastRemindTime;
-
-    /** 下次提醒时间 */
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    private Date nextRemindTime;
-
-    /** 所属用户 */
-    private Long userId;
 
     /** 备注 */
     private String remark;
