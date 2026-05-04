@@ -28,26 +28,26 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="入院时间" style="width: 308px">
-        <el-date-picker
-            v-model="daterangeInTime"
-            value-format="YYYY-MM-DD"
-            type="daterange"
-            range-separator="-"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-        ></el-date-picker>
-      </el-form-item>
-      <el-form-item label="出院时间" style="width: 308px">
-        <el-date-picker
-            v-model="daterangeOutTime"
-            value-format="YYYY-MM-DD"
-            type="daterange"
-            range-separator="-"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-        ></el-date-picker>
-      </el-form-item>
+<!--      <el-form-item label="入院时间" style="width: 308px">-->
+<!--        <el-date-picker-->
+<!--            v-model="daterangeInTime"-->
+<!--            value-format="YYYY-MM-DD"-->
+<!--            type="daterange"-->
+<!--            range-separator="-"-->
+<!--            start-placeholder="开始日期"-->
+<!--            end-placeholder="结束日期"-->
+<!--        ></el-date-picker>-->
+<!--      </el-form-item>-->
+<!--      <el-form-item label="出院时间" style="width: 308px">-->
+<!--        <el-date-picker-->
+<!--            v-model="daterangeOutTime"-->
+<!--            value-format="YYYY-MM-DD"-->
+<!--            type="daterange"-->
+<!--            range-separator="-"-->
+<!--            start-placeholder="开始日期"-->
+<!--            end-placeholder="结束日期"-->
+<!--        ></el-date-picker>-->
+<!--      </el-form-item>-->
       <el-form-item label="住院机构" prop="hospitalName">
         <el-input
             v-model="queryParams.hospitalName"

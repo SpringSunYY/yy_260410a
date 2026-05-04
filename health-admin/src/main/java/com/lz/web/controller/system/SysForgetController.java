@@ -13,7 +13,7 @@ import com.lz.framework.web.service.SysForgetService;
 /**
  * 找回密码
  *
- * @author ruoyi
+ * @author YY
  */
 @RestController
 public class SysForgetController extends BaseController {

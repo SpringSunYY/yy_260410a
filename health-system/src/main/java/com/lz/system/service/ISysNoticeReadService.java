@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * 公告已读记录 服务层
  *
- * @author ruoyi
+ * @author YY
  */
 public interface ISysNoticeReadService
 {

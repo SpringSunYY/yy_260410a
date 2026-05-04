@@ -118,6 +118,9 @@ public class HealthHistoryInfoController extends BaseController
         return toAjax(healthHistoryInfoService.deleteHealthHistoryInfoByIds(ids));
     }
 
+    /**
+     * 健康记录统计
+     */
     @PreAuthorize("@ss.hasPermi('manage:healthHistoryInfo:statistics')")
     @GetMapping("/statistics")
     public AjaxResult healthHistoryInfoStatistics(@Validated HealthHistoryInfoStatisticsQuery healthHistoryInfoQuery){

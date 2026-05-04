@@ -145,7 +145,7 @@
       <el-table-column type="selection" width="55" align="center"/>
       <el-table-column type="expand">
         <template #default="props">
-          <el-card style="margin: 1rem;padding: 1rem" v-html="props.row.remindContent"></el-card>
+          <el-card style="margin: 1rem;padding: 1rem" v-html="props.row.reminderContent"></el-card>
         </template>
       </el-table-column>
       <el-table-column label="编号" align="center" prop="id" v-if="columns[0].visible" :show-overflow-tooltip="true"/>

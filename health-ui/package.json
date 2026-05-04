@@ -2,7 +2,7 @@
   "name": "ruoyi",
   "version": "3.9.1",
   "description": "社区居民健康档案管理系统",
-  "author": "若依",
+  "author": "",
   "license": "MIT",
   "type": "module",
   "scripts": {

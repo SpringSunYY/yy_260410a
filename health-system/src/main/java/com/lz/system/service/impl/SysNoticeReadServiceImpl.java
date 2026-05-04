@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * 公告已读记录 服务层实现
  *
- * @author ruoyi
+ * @author YY
  */
 @Service
 public class SysNoticeReadServiceImpl implements ISysNoticeReadService

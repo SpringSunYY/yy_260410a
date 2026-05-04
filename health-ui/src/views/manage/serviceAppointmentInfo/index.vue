@@ -1,14 +1,14 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryRef" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="编号" prop="id">
-        <el-input
-            v-model="queryParams.id"
-            placeholder="请输入编号"
-            clearable
-            @keyup.enter="handleQuery"
-        />
-      </el-form-item>
+<!--      <el-form-item label="编号" prop="id">-->
+<!--        <el-input-->
+<!--            v-model="queryParams.id"-->
+<!--            placeholder="请输入编号"-->
+<!--            clearable-->
+<!--            @keyup.enter="handleQuery"-->
+<!--        />-->
+<!--      </el-form-item>-->
       <el-form-item label="居民" prop="residentId">
         <el-select
             v-model="queryParams.userId"
@@ -76,14 +76,14 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="预约医生" prop="appointmentUserId">
-        <el-input
-            v-model="queryParams.appointmentUserId"
-            placeholder="请输入预约医生"
-            clearable
-            @keyup.enter="handleQuery"
-        />
-      </el-form-item>
+<!--      <el-form-item label="预约医生" prop="appointmentUserId">-->
+<!--        <el-input-->
+<!--            v-model="queryParams.appointmentUserId"-->
+<!--            placeholder="请输入预约医生"-->
+<!--            clearable-->
+<!--            @keyup.enter="handleQuery"-->
+<!--        />-->
+<!--      </el-form-item>-->
       <!--      <el-form-item label="所属用户" prop="userId">-->
       <!--        <el-input-->
       <!--            v-model="queryParams.userId"-->
@@ -92,14 +92,14 @@
       <!--            @keyup.enter="handleQuery"-->
       <!--        />-->
       <!--      </el-form-item>-->
-      <el-form-item label="创建人" prop="createBy">
-        <el-input
-            v-model="queryParams.createBy"
-            placeholder="请输入创建人"
-            clearable
-            @keyup.enter="handleQuery"
-        />
-      </el-form-item>
+<!--      <el-form-item label="创建人" prop="createBy">-->
+<!--        <el-input-->
+<!--            v-model="queryParams.createBy"-->
+<!--            placeholder="请输入创建人"-->
+<!--            clearable-->
+<!--            @keyup.enter="handleQuery"-->
+<!--        />-->
+<!--      </el-form-item>-->
       <el-form-item label="创建时间" style="width: 308px">
         <el-date-picker
             v-model="daterangeCreateTime"

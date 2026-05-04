@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * 公告已读记录 数据层
  *
- * @author ruoyi
+ * @author YY
  */
 public interface SysNoticeReadMapper
 {

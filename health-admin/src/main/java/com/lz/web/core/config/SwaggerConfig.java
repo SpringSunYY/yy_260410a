@@ -14,7 +14,7 @@ import org.springframework.context.annotation.Configuration;
 /**
  * Swagger2的接口配置
  *
- * @author ruoyi
+ * @author YY
  */
 @Configuration
 public class SwaggerConfig
@@ -53,7 +53,7 @@ public class SwaggerConfig
     {
         return new Info()
                 // 设置标题
-                .title("标题：若依管理系统_接口文档")
+                .title("标题：管理系统_接口文档")
                 // 描述
                 .description("描述：用于管理集团旗下公司的人员信息,具体包括XXX,XXX模块...")
                 // 作者信息

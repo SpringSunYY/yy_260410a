@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * 找回密码服务
  *
- * @author ruoyi
+ * @author YY
  */
 @Component
 public class SysForgetService {
